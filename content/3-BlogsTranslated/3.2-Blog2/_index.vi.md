@@ -5,123 +5,60 @@ weight: 1
 chapter: false
 pre: " <b> 3.2. </b> "
 ---
+# Tối ưu quy trình Disaster Recovery cho Stateful Services trên Amazon EKS bằng Velero
 
-{{% notice warning %}}
-⚠️ **Lưu ý:** Các thông tin dưới đây chỉ nhằm mục đích tham khảo, vui lòng **không sao chép nguyên văn** cho bài báo cáo của bạn kể cả warning này.
-{{% /notice %}}
+Việc đảm bảo tính sẵn sàng cao và an toàn dữ liệu luôn là bài toán sống còn đối với các hệ thống chạy trên nền tảng Kubernetes. Khi vô tình xóa nhầm một không gian tên (namespace) trên môi trường production hoặc quá trình nâng cấp cụm máy chủ gặp lỗi, việc tái thiết lập thủ công toàn bộ tài nguyên sẽ gây tiêu tốn rất nhiều thời gian và công sức của đội ngũ vận hành. 
 
-# Bắt đầu với healthcare data lakes: Sử dụng microservices
-
-Các data lake có thể giúp các bệnh viện và cơ sở y tế chuyển dữ liệu thành những thông tin chi tiết về doanh nghiệp và duy trì hoạt động kinh doanh liên tục, đồng thời bảo vệ quyền riêng tư của bệnh nhân. **Data lake** là một kho lưu trữ tập trung, được quản lý và bảo mật để lưu trữ tất cả dữ liệu của bạn, cả ở dạng ban đầu và đã xử lý để phân tích. data lake cho phép bạn chia nhỏ các kho chứa dữ liệu và kết hợp các loại phân tích khác nhau để có được thông tin chi tiết và đưa ra các quyết định kinh doanh tốt hơn.
-
-Bài đăng trên blog này là một phần của loạt bài lớn hơn về việc bắt đầu cài đặt data lake dành cho lĩnh vực y tế. Trong bài đăng blog cuối cùng của tôi trong loạt bài, *“Bắt đầu với data lake dành cho lĩnh vực y tế: Đào sâu vào Amazon Cognito”*, tôi tập trung vào các chi tiết cụ thể của việc sử dụng Amazon Cognito và Attribute Based Access Control (ABAC) để xác thực và ủy quyền người dùng trong giải pháp data lake y tế. Trong blog này, tôi trình bày chi tiết cách giải pháp đã phát triển ở cấp độ cơ bản, bao gồm các quyết định thiết kế mà tôi đã đưa ra và các tính năng bổ sung được sử dụng. Bạn có thể truy cập các code samples cho giải pháp tại Git repo này để tham khảo.
+Giải pháp sao lưu và phục hồi thảm họa (Disaster Recovery) sử dụng công cụ mã nguồn mở Velero giúp tự động hóa việc đóng gói cấu hình logic lên Amazon S3, đồng thời chụp ảnh đĩa vật lý của các ứng dụng có trạng thái (Stateful) dưới dạng Amazon EBS Snapshots. Bài viết này tổng hợp chi tiết kiến trúc, quy trình hoạt động và những lưu ý kỹ thuật quan trọng rút ra từ quá trình triển khai thực tế giải pháp trên hệ thống Amazon EKS.
 
 ---
 
-## Hướng dẫn kiến trúc
+## 1. Các ưu điểm cốt lõi của giải pháp
 
-Thay đổi chính kể từ lần trình bày cuối cùng của kiến trúc tổng thể là việc tách dịch vụ đơn lẻ thành một tập hợp các dịch vụ nhỏ để cải thiện khả năng bảo trì và tính linh hoạt. Việc tích hợp một lượng lớn dữ liệu y tế khác nhau thường yêu cầu các trình kết nối chuyên biệt cho từng định dạng; bằng cách giữ chúng được đóng gói riêng biệt với microservices, chúng ta có thể thêm, xóa và sửa đổi từng trình kết nối mà không ảnh hưởng đến những kết nối khác. Các microservices được kết nối rời thông qua tin nhắn publish/subscribe tập trung trong cái mà tôi gọi là “pub/sub hub”.
+Kiến trúc triển khai tập trung tối ưu hóa hệ thống dựa trên hai khía cạnh quan trọng: khả năng bảo toàn vẹn toàn dữ liệu và siết chặt tiêu chuẩn an toàn hạ tầng.
 
-Giải pháp này đại diện cho những gì tôi sẽ coi là một lần lặp nước rút hợp lý khác từ last post của tôi. Phạm vi vẫn được giới hạn trong việc nhập và phân tích cú pháp đơn giản của các **HL7v2 messages** được định dạng theo **Quy tắc mã hóa 7 (ER7)** thông qua giao diện REST.
-
-**Kiến trúc giải pháp bây giờ như sau:**
-
-> *Hình 1. Kiến trúc tổng thể; những ô màu thể hiện những dịch vụ riêng biệt.*
+- **Bảo mật qua EKS Pod Identity:** Thay vì sử dụng các thông tin xác thực tĩnh (AWS Access Key dài hạn) hoặc lạm dụng quyền tối cao `cluster-admin` mặc định của hệ thống, giải pháp thiết lập cơ chế ủy quyền ngắn hạn qua EKS Pod Identity. Kết hợp với một `ClusterRole` tùy chỉnh, Velero chỉ được phép tương tác tối thiểu với các apiGroups thực sự cần thiết theo nguyên tắc Least Privilege.
+- **Sao lưu đồng bộ hai thành phần:** Khác với các giải pháp thông thường chỉ lưu trữ cấu hình mềm, Velero xử lý song song cả file cấu hình logic (Deployments, PVCs, Secrets... được nén và đẩy về Amazon S3) lẫn dữ liệu thực tế lưu trong ổ đĩa gp3 (được đóng băng và đúc thành các bản Amazon EBS Snapshots).
+- **Khôi phục linh hoạt chéo Namespace:** Tính năng `namespaceMapping` cho phép tái thiết lập nhanh chóng toàn bộ ứng dụng và kéo ngược dữ liệu lịch sử từ bản snapshot cũ sang một phân vùng độc lập mới (`myrestore`) mà không gây ảnh hưởng đến môi trường gốc.
 
 ---
 
-Mặc dù thuật ngữ *microservices* có một số sự mơ hồ cố hữu, một số đặc điểm là chung:  
-- Chúng nhỏ, tự chủ, kết hợp rời rạc  
-- Có thể tái sử dụng, giao tiếp thông qua giao diện được xác định rõ  
-- Chuyên biệt để giải quyết một việc  
-- Thường được triển khai trong **event-driven architecture**
+## 2. Quy trình hoạt động của hệ thống
 
-Khi xác định vị trí tạo ranh giới giữa các microservices, cần cân nhắc:  
-- **Nội tại**: công nghệ được sử dụng, hiệu suất, độ tin cậy, khả năng mở rộng  
-- **Bên ngoài**: chức năng phụ thuộc, tần suất thay đổi, khả năng tái sử dụng  
-- **Con người**: quyền sở hữu nhóm, quản lý *cognitive load*
+Luồng xử lý dữ liệu của giải pháp được chia tách rõ ràng thành hai giai đoạn độc lập thông qua Kubernetes Custom Resource:
+
+- **Khi sao lưu (Backup):** Velero controller tiếp nhận yêu cầu, quét qua Kubernetes API để thu thập toàn bộ định nghĩa tài nguyên trong không gian tên chỉ định và đẩy tệp nén về S3 Bucket. Đối với phân vùng đĩa vật lý bền vững, hệ thống đồng thời gọi API của AWS để kích hoạt tiến trình chụp ảnh đĩa vật lý (EBS Snapshot) nhằm đóng băng trạng thái dữ liệu tại thời điểm sao lưu.
+- **Khi phục hồi (Restore):** Khi thực hiện khôi phục sang namespace mới, AWS tự động phân tích dữ liệu cấu hình lưu trên S3, đọc thông tin snapshot cũ từ tiến trình backup trước đó để "đúc" thành một ổ đĩa `gp3` mới hoàn toàn. Ổ đĩa mới này tự động được gắn (mount) vào Worker Node để ứng dụng tiếp tục ghi dữ liệu nối tiếp vào tệp lịch sử mà không bị gián đoạn.
+
+---
+![Backup restore](/images/104.png)
+## 3. Lựa chọn công nghệ và phạm vi lưu trữ
+
+| Thành phần hệ thống | Công nghệ sử dụng | Vai trò trong kiến trúc |
+| :--- | :--- | :--- |
+| **Control Plane Backup** | Amazon S3 | Lưu trữ tập trung các tệp định nghĩa tài nguyên logic dạng `.tar.gz` |
+| **Data Plane Backup** | Amazon EBS Snapshots | Lưu trữ dữ liệu thực tế (Stateful) của ứng dụng theo cơ chế khối (Block Storage) |
+| **Identity & Access** | EKS Pod Identity | Quản lý định danh và cấp quyền hạn ngắn hạn cho Pod thông qua IAM Role |
+| **Orchestration** | Velero Server & Helm | Quản lý vòng đời tiến trình sao lưu và phục hồi tài nguyên trong cụm |
 
 ---
 
-## Lựa chọn công nghệ và phạm vi giao tiếp
+## 4. Lưu ý kỹ thuật khi triển khai thực tế
 
-| Phạm vi giao tiếp                        | Các công nghệ / mô hình cần xem xét                                                        |
-| ---------------------------------------- | ------------------------------------------------------------------------------------------ |
-| Trong một microservice                   | Amazon Simple Queue Service (Amazon SQS), AWS Step Functions                               |
-| Giữa các microservices trong một dịch vụ | AWS CloudFormation cross-stack references, Amazon Simple Notification Service (Amazon SNS) |
-| Giữa các dịch vụ                         | Amazon EventBridge, AWS Cloud Map, Amazon API Gateway                                      |
+Trong quá trình thực hành cấu hình giải pháp, hệ thống phát sinh một số vấn đề đặc thù cần phải tối chỉnh trực tiếp trên hạ tầng:
 
----
+### Đặc thù môi trường Windows CMD
+Do tài liệu hướng dẫn gốc được tối ưu hoàn toàn cho môi trường Linux, khi thực thi các câu lệnh trên Windows CMD cần phải chuyển đổi toàn bộ cú pháp biến môi trường sang định dạng `%VARIABLE%`. Thêm vào đó, quá trình sinh các file manifest cấu hình YAML từ terminal cần được bọc trong cụm câu lệnh đóng mở ngoặc hoặc sử dụng các lệnh PowerShell ngầm để tránh lỗi vỡ ký tự đặc biệt.
 
-## The pub/sub hub
-
-Việc sử dụng kiến trúc **hub-and-spoke** (hay message broker) hoạt động tốt với một số lượng nhỏ các microservices liên quan chặt chẽ.  
-- Mỗi microservice chỉ phụ thuộc vào *hub*  
-- Kết nối giữa các microservice chỉ giới hạn ở nội dung của message được xuất  
-- Giảm số lượng synchronous calls vì pub/sub là *push* không đồng bộ một chiều
-
-Nhược điểm: cần **phối hợp và giám sát** để tránh microservice xử lý nhầm message.
+![EKS Pod Identity Association](/images/101.png)
+### Lỗi kẹt Pod ở trạng thái Pending (FailedScheduling)
+Lỗi này xuất hiện do file deployment mẫu của AWS mặc định cấu hình thuộc tính kén node (`nodeSelector` ràng buộc với EKS Auto Mode). Nếu hạ tầng thực tế đang vận hành cụm Standard Node Group thông thường, Pod sẽ không thể lập lịch. Việc chủ động lược bỏ dòng cấu hình lọc node này trong file deployment sẽ giúp ứng dụng nhanh chóng chuyển sang trạng thái `Running` và nhận ổ đĩa mượt mà.
 
 ---
 
-## Core microservice
+![Velero Backup Completed](/images/100.png)
+## 5. Lời kết
 
-Cung cấp dữ liệu nền tảng và lớp truyền thông, gồm:  
-- **Amazon S3** bucket cho dữ liệu  
-- **Amazon DynamoDB** cho danh mục dữ liệu  
-- **AWS Lambda** để ghi message vào data lake và danh mục  
-- **Amazon SNS** topic làm *hub*  
-- **Amazon S3** bucket cho artifacts như mã Lambda
+Sự kết hợp giữa Velero và Amazon EKS thông qua cơ chế xác thực Pod Identity mang lại một giải pháp khôi phục thảm họa toàn diện cho các ứng dụng có trạng thái trên môi trường Cloud. Phương án tiếp cận này không chỉ đáp ứng tốt các tiêu chuẩn an toàn bảo mật nghiêm ngặt của doanh nghiệp mà còn giảm thiểu đáng kể gánh nặng vận hành cho đội ngũ Operations khi hệ thống đối mặt với các sự cố lớn.
 
-> Chỉ cho phép truy cập ghi gián tiếp vào data lake qua hàm Lambda → đảm bảo nhất quán.
-
----
-
-## Front door microservice
-
-- Cung cấp API Gateway để tương tác REST bên ngoài  
-- Xác thực & ủy quyền dựa trên **OIDC** thông qua **Amazon Cognito**  
-- Cơ chế *deduplication* tự quản lý bằng DynamoDB thay vì SNS FIFO vì:
-  1. SNS deduplication TTL chỉ 5 phút
-  2. SNS FIFO yêu cầu SQS FIFO
-  3. Chủ động báo cho sender biết message là bản sao
-
----
-
-## Staging ER7 microservice
-
-- Lambda “trigger” đăng ký với pub/sub hub, lọc message theo attribute  
-- Step Functions Express Workflow để chuyển ER7 → JSON  
-- Hai Lambda:
-  1. Sửa format ER7 (newline, carriage return)
-  2. Parsing logic  
-- Kết quả hoặc lỗi được đẩy lại vào pub/sub hub
-
----
-
-## Tính năng mới trong giải pháp
-
-### 1. AWS CloudFormation cross-stack references
-Ví dụ *outputs* trong core microservice:
-```yaml
-Outputs:
-  Bucket:
-    Value: !Ref Bucket
-    Export:
-      Name: !Sub ${AWS::StackName}-Bucket
-  ArtifactBucket:
-    Value: !Ref ArtifactBucket
-    Export:
-      Name: !Sub ${AWS::StackName}-ArtifactBucket
-  Topic:
-    Value: !Ref Topic
-    Export:
-      Name: !Sub ${AWS::StackName}-Topic
-  Catalog:
-    Value: !Ref Catalog
-    Export:
-      Name: !Sub ${AWS::StackName}-Catalog
-  CatalogArn:
-    Value: !GetAtt Catalog.Arn
-    Export:
-      Name: !Sub ${AWS::StackName}-CatalogArn
+Bài viết gốc: https://aws.amazon.com/blogs/containers/back-up-and-restore-your-amazon-eks-cluster-resources-using-velero/

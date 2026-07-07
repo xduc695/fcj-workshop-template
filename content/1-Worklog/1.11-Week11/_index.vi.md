@@ -5,55 +5,64 @@ weight: 2
 chapter: false
 pre: " <b> 1.11. </b> "
 ---
-{{% notice warning %}}
-⚠️ **Lưu ý:** Các thông tin dưới đây chỉ nhằm mục đích tham khảo, vui lòng **không sao chép nguyên văn** cho bài báo cáo của bạn kể cả warning này.
-{{% /notice %}}
-
-
 ### Mục tiêu tuần 11:
 
-* Kết nối, làm quen với các thành viên trong First Cloud Journey.
-* Hiểu dịch vụ AWS cơ bản, cách dùng console & CLI.
-
+* Nghiên cứu cơ chế API Gateway, giải pháp giới hạn tần suất (Rate Limiting) và nền tảng điều phối K8s để quản lý giao tiếp tập trung và tối ưu hóa triển khai Microservices.
+* Tìm hiểu sự phối hợp giữa API Gateway và Resilience4j (Retry, Circuit Breaker) nhằm nâng cao khả năng chịu lỗi và ngăn ngừa sụp đổ dây chuyền (Cascading Failure).
+* Thực hành cấu hình Resilience4j (Retry & Circuit Breaker) trên Payment Service để bảo vệ các giao tiếp liên dịch vụ khi có sự cố quá tải hoặc mất kết nối.
+* Triển khai API Gateway tích hợp bộ lọc giới hạn tần suất LocalRateLimiter (In-memory), đồng thời dọn dẹp và loại bỏ hoàn toàn cơ chế Rate Limit cũ tại Account Service.
+* Thực hiện tổng hợp kiến thức, hệ thống hóa tài liệu và hoàn thiện 03 bài báo cáo thu hoạch chi tiết về chuỗi sự kiện công nghệ *First Cloud AI Journey* đã tham gia, nhằm ghi nhận các giá trị học tập về AI Agent, Cloud FinOps, Kiến trúc Microservices chịu tải cao và lộ trình phát triển sự nghiệp Modern DevOps vào báo cáo thực tập chính thức.
+* Thực hiện hệ thống hóa kiến thức thực chiến, đóng gói tài liệu kỹ thuật và hoàn thiện báo cáo tiến độ về 03 bài viết chuyên sâu đã đăng tải trên AWS Study Group VN, nhằm ghi nhận các giải pháp nâng cao về Tự động hóa CI/CD (DevOps), Phục hồi thảm họa (Disaster Recovery) và Tối ưu hóa chi phí đám mây (FinOps) vào tài liệu thực tập chính thức.
 ### Các công việc cần triển khai trong tuần này:
-| Thứ | Công việc                                                                                                                                                                                   | Ngày bắt đầu | Ngày hoàn thành | Nguồn tài liệu                            |
-| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ | --------------- | ----------------------------------------- |
-| 2   | - Làm quen với các thành viên FCJ <br> - Đọc và lưu ý các nội quy, quy định tại đơn vị thực tập                                                                                             | 11/08/2025   | 11/08/2025      |
-| 3   | - Tìm hiểu AWS và các loại dịch vụ <br>&emsp; + Compute <br>&emsp; + Storage <br>&emsp; + Networking <br>&emsp; + Database <br>&emsp; + ... <br>                                            | 12/08/2025   | 12/08/2025      | <https://cloudjourney.awsstudygroup.com/> |
-| 4   | - Tạo AWS Free Tier account <br> - Tìm hiểu AWS Console & AWS CLI <br> - **Thực hành:** <br>&emsp; + Tạo AWS account <br>&emsp; + Cài AWS CLI & cấu hình <br> &emsp; + Cách sử dụng AWS CLI | 13/08/2025   | 13/08/2025      | <https://cloudjourney.awsstudygroup.com/> |
-| 5   | - Tìm hiểu EC2 cơ bản: <br>&emsp; + Instance types <br>&emsp; + AMI <br>&emsp; + EBS <br>&emsp; + ... <br> - Các cách remote SSH vào EC2 <br> - Tìm hiểu Elastic IP   <br>                  | 14/08/2025   | 15/08/2025      | <https://cloudjourney.awsstudygroup.com/> |
-| 6   | - **Thực hành:** <br>&emsp; + Tạo EC2 instance <br>&emsp; + Kết nối SSH <br>&emsp; + Gắn EBS volume                                                                                         | 15/08/2025   | 15/08/2025      | <https://cloudjourney.awsstudygroup.com/> |
+| Ngày | Công việc | Ngày bắt đầu | Ngày hoàn thành | Nguồn tài liệu |
+| --- | --- | --- | --- | --- |
+| 1 | - Nghiên cứu lý thuyết API Gateway và giải pháp điều phối luồng: <br>&emsp; + Tìm hiểu nguyên lý hoạt động của kiến trúc API Gateway đóng vai trò làm điểm đầu cuối duy nhất (Single Entry Point) đảm nhận các tác vụ định tuyến, bảo mật và trừu tượng hóa kiến trúc Microservices phía sau. <br>&emsp; + Nghiên cứu cơ chế vận hành và tham số cấu hình của giải pháp Rate Limiting tiêu chuẩn nhằm kiểm soát tần suất gọi API. <br>&emsp; + Tìm hiểu nguyên lý hoạt động và giải pháp thiết lập bộ giới hạn tần suất (Rate Limiter) tại API Gateway để bảo vệ hệ thống.<br> - Nghiên cứu kiến trúc vận hành và các thành phần cốt lõi của Kubernetes (K8s):<br>&emsp;+ Tìm hiểu kiến trúc tổng thể của Cluster K8s bao gồm Master Node (Control Plane) và Worker Node đảm nhận việc quản lý trạng thái mong muốn của hệ thống.<br>&emsp; + Nghiên cứu cơ chế vận hành và tính chất của các đối tượng cơ bản trong K8s bao gồm Pods (đơn vị deploy nhỏ nhất) và Deployments (quản lý bản sao và cập nhật ứng dụng). <br>&emsp; + Tìm hiểu nguyên lý hoạt động và cấu hình của Services (định tuyến traffic nội bộ) và Ingress (quản lý traffic từ bên ngoài vào cluster). | 26/06/2026 | 26/06/2026 | 
+| 2 | - Nghiên cứu mô hình phối hợp giữa API Gateway và Resilience4j bảo vệ hệ thống: <br>&emsp; + Tìm hiểu giải pháp phân tách nhiệm vụ: cấu hình bộ lọc giới hạn tần suất LocalRateLimiter tại API Gateway, đồng thời triển khai Circuit Breaker và Retry tại các dịch vụ nội bộ (như payment-service) để bảo vệ giao tiếp Feign Client. <br>&emsp; + Nghiên cứu cơ chế thiết lập chuỗi xử lý lỗi (Resilience Chain): thực hiện giới hạn thời gian phản hồi (Timeout), kích hoạt thử lại (Retry), và tự động ngắt mạch (Circuit Breaker) khi gọi dịch vụ nội bộ. <br>&emsp; + Tìm hiểu giải pháp xây dựng các hàm dự phòng (Fallback Methods) để trả về phản hồi mặc định khi dịch vụ đích gặp sự cố.<br> - Nghiên cứu cơ chế Rate Limiting trong bộ nhớ (In-memory): <br>&emsp; + Tìm hiểu phương pháp triển khai thuật toán Token Bucket (LocalRateLimiter) tại API Gateway để tối ưu hóa hiệu năng mà không phụ thuộc vào Redis. <br>&emsp; + Nghiên cứu chiến lược định danh đối tượng và phân bổ hạn ngạch request dựa trên cấu hình Gateway. | 27/06/2026 | 27/06/2026 | 
+| 3 | - Nghiên cứu lý thuyết và cấu hình chuỗi giải pháp chống chịu lỗi với Resilience4j và Rate Limiting: <br> - **Thực hành:** <br>&emsp; + Tích hợp các dependency Resilience4j (spring-cloud-starter-circuitbreaker-resilience4j và spring-boot-starter-aop) vào dự án. <br>&emsp; + Cấu hình tính năng Retry trên Payment Service thông qua file application.yml, thiết lập số lần thử lại tối đa (max-attempts: 3) và khoảng thời gian chờ tăng dần (Exponential Backoff) khi gọi sang dịch vụ tài khoản. <br>&emsp; + Tích hợp annotation @Retry vào client gọi dịch vụ (AccountServiceClient) của Payment Service để tự động khôi phục giao dịch đối với các lỗi mạng ngắn hạn. <br>&emsp; + Triển khai cấu hình Circuit Breaker trên Payment Service với các tham số cốt lõi: cửa sổ trượt giám sát (slidingWindowSize), ngưỡng tỷ lệ lỗi kích hoạt mở mạch (failureRateThreshold), và thời gian chờ để thử nghiệm phục hồi (waitDurationInOpenState). <br>&emsp; + Tích hợp annotation @CircuitBreaker vào luồng xử lý thanh toán của Payment Service, thực hiện viết hàm xử lý dự phòng paymentFallbackMethod để trả về thông báo lỗi chuẩn nghiệp vụ tài chính khi Account Service gặp sự cố (mạch OPEN). <br>&emsp; + Thiết lập và kiểm thử bộ giới hạn tần suất Rate Limiter bằng Resilience4j ban đầu tại Account Service trước khi lên kế hoạch tập trung hóa tại Gateway. | 28/06/2026 | 28/06/2026 | <https://github.com/LonggTran/high-concurrency-payment-gateway>|
+| 4 | - Triển khai API Gateway Service tích hợp Rate Limiting và loại bỏ cấu hình Rate Limit tại Account Service:<br>- **Thực hành:** <br>&emsp; + Khởi tạo dịch vụ API Gateway sử dụng Spring Cloud Gateway WebFlux tương thích Spring Boot 4.x, cấu hình các route định tuyến động đến Account Service và Payment Service. <br>&emsp; + Thiết kế bộ lọc tự định nghĩa LocalRateLimiterGatewayFilterFactory sử dụng thuật toán Token Bucket trong bộ nhớ (In-memory) để bảo vệ hệ thống khỏi tấn công DDoS và quá tải mà không phụ thuộc vào Redis. <br>&emsp; + Tiến hành bóc tách, dọn dẹp (Clean up/Refactor) toàn bộ annotation @RateLimiter cùng các cấu hình liên quan đến giới hạn tần suất cũ tại Account Service để tập trung nghiệp vụ. <br>&emsp; + Cấu hình luồng gọi nội bộ trực tiếp giữa Payment Service và Account Service nhằm tối ưu hóa độ trễ, trong khi luồng từ bên ngoài đi qua API Gateway. <br>&emsp; + Viết và chạy thành công các file script kiểm thử PowerShell (test_concurrency.ps1, test_payment_resilience.ps1) để xác thực hoạt động của Rate Limiting (chặn đúng mã lỗi 429) và cơ chế ngắt mạch (Circuit Breaker ngắt mạch OPEN nhanh chóng sau 6 request lỗi). | 29/06/2026 | 30/06/2026 | <https://github.com/LonggTran/high-concurrency-payment-gateway>|
+| 5 | - Tổng hợp nội dung và viết bài thu hoạch Event 1 - Tổng quan AI, Cloud & Chuẩn Software Engineering: <br>&emsp; + Hệ thống hóa kiến trúc triển khai ứng dụng AI trên nền tảng AWS (API Gateway, Lambda, Cognito, Bedrock, DynamoDB, CloudWatch). <br>&emsp; + Viết nội dung phân tích cấu trúc Prompt Engineering tiêu chuẩn và quy trình điều phối hệ thống phối hợp đa nhiệm giữa các AI Agent (PM, Architect, Developer, Reviewer) theo quy trình chuẩn Software Engineering.<br> - Tổng hợp nội dung và viết bài thu hoạch Event 2 - Lộ trình tự học AWS, Kỹ thuật GenAI Pipeline cho Startup và Tư duy DevOps: <br>&emsp; + Hệ thống hóa quy trình chuyển dịch hạ tầng từ máy chủ truyền thống lên kiến trúc Serverless/Managed Services và mô hình xử lý GenAI 3 lớp chuyên sâu của dự án thực tế. <br>&emsp; + Viết nội dung bóc tách các trụ cột cốt lõi của DevOps Foundation (Con người $\rightarrow$ Quy trình $\rightarrow$ Công nghệ) và ứng dụng tư duy hệ thống vào quản lý vòng đời dự án.<br> - Tổng hợp nội dung và viết bài thu hoạch Event 3 - Kiến trúc thời gian thực, GraphRAG, An ninh mạng ML và Dịch chuyển sự nghiệp: <br>&emsp; + Biên soạn nội dung phân tích kiến trúc kết nối thời gian thực qua Serverless WebSocket trên AWS và giải pháp khắc phục giới hạn RAG truyền thống bằng GraphRAG (Amazon Neptune & Bedrock). <br>&emsp; + Hệ thống hóa giải pháp an ninh mạng đa tầng kết hợp AWS WAF và mô hình học máy LightGBM, đồng thời sơ đồ hóa lộ trình 4 cấp độ tư duy dịch chuyển sự nghiệp sang Modern DevOps | 01/07/2026 | 01/07/2026 | 
+| 6 | - Biên soạn nội dung báo cáo Blog 1 - Tự động hóa CI/CD với GitHub Actions và Amazon ECS Express Mode: <br>&emsp; + Hệ thống hóa giải pháp xác thực không mật khẩu qua cơ chế OpenID Connect (OIDC) kết hợp IAM Role ngắn hạn để siết chặt bảo mật hạ tầng. <br>&emsp; + Viết nội dung phân tích luồng hoạt động tự động hóa: Giai đoạn CI (gắn tag image tự động theo Commit SHA 7 ký tự đầu và push lên Amazon ECR) và Giai đoạn CD (gọi API AWS thông qua Action chuyên dụng để cập nhật Task chạy trên AWS Fargate không máy chủ).<br> - Biên soạn nội dung báo cáo Blog 2 - Phục hồi thảm họa cho Stateful Services trên Amazon EKS bằng Velero: <br>&emsp; + Hệ thống hóa cơ chế phân tách và sao lưu đồng bộ song song hai thành phần: cấu hình logic dạng tệp nén .tar.gz đẩy về S3 và dữ liệu đĩa vật lý có trạng thái (Stateful) qua Amazon EBS Snapshots. <br>&emsp; + Viết tài liệu tổng hợp quy trình xử lý lỗi thực tế bao gồm cú pháp biến môi trường trên Windows CMD (%VARIABLE%) và lỗi kẹt Pod ở trạng thái Pending (FailedScheduling) do cấu hình thuộc tính kén node (nodeSelector).<br> - Biên soạn nội dung báo cáo Blog 3 - Tối ưu chi phí và bứt phá giới hạn lưu trữ với EC2 Capacity Manager và Amazon Athena: <br>&emsp; + Hệ thống hóa giải pháp xuất dữ liệu định dạng nén Parquet (Snappy) lên S3 theo cấu trúc ngày/giờ và cơ chế tự động nhận diện metadata thông qua tính năng Partition Projection (Athena). <br>&emsp; + Viết tài liệu phân tích 3 kịch bản truy vấn SQL thực tế để giải quyết bài toán FinOps doanh nghiệp: săn tìm các gói ODCR lãng phí (wasted_cost_usd), nhận diện quy luật tải đỉnh (Peak Usage) và chia sẻ tài nguyên trống cấp độ Availability Zone (az-id). | 02/07/2026 | 02/07/2026 | 
 
 
 ### Kết quả đạt được tuần 11:
 
-* Hiểu AWS là gì và nắm được các nhóm dịch vụ cơ bản: 
-  * Compute
-  * Storage
-  * Networking 
-  * Database
-  * ...
+* Nghiên cứu giải pháp quản lý giao tiếp và bảo vệ hệ thống với API Gateway & Rate Limiting:
+  * Làm chủ nguyên lý hoạt động của API Gateway trong việc xử lý Dynamic Routing, phân giải phân vùng dịch vụ và tích hợp các bộ lọc trung gian.
+  * Hiểu rõ cơ chế áp dụng Rate Limiting tiêu chuẩn để cấu hình Request Thresholds dựa trên định danh Client, đảm bảo tính sẵn sàng và công bằng về tài nguyên cho toàn hệ thống.
+  * Định hình được mô hình thiết lập bộ lọc tự định nghĩa LocalRateLimiter (In-Memory Token Bucket) tại API Gateway để quản lý lưu lượng và giới hạn tần suất tối ưu.
 
-* Đã tạo và cấu hình AWS Free Tier account thành công.
+* Hệ thống hóa kiến trúc điều phối container và quản lý vòng đời ứng dụng với Kubernetes (K8s):
+  * Nắm vững quy trình đóng gói và điều phối các dịch vụ Microservices lên môi trường K8s Cluster, hiểu rõ cách tự động hóa quy trình cuộn cập nhật và phục hồi ứng dụng.
+  * Hiểu rõ tầm quan trọng của đối tượng Service và Ingress Controller trong việc quản lý cơ chế phát hiện dịch vụ và cân bằng tải cho mạng lưới Microservices.
+  * Làm chủ nguyên lý tự động mở rộng (HPA) và cơ chế Self-Healing của K8s dựa trên các chỉ số tài nguyên và cấu hình Liveness/Readiness Probes.
 
-* Làm quen với AWS Management Console và biết cách tìm, truy cập, sử dụng dịch vụ từ giao diện web.
+* Nghiên cứu giải pháp chịu lỗi tích hợp tại các dịch vụ nội bộ (Downstream):
+  * Làm chủ quy trình thiết lập bộ lọc CircuitBreaker và Retry trên Feign Client của payment-service khi giao tiếp trực tiếp với account-service, đảm bảo không làm cạn kiệt tài nguyên luồng (Thread Starvation) khi dịch vụ đích gặp sự cố.
+  * Hiểu rõ cơ chế cấu hình tham số nâng cao cho hệ thống ngân hàng như failureRateThreshold (ngưỡng tỷ lệ lỗi), slidingWindowSize (kích thước cửa sổ trượt để giám sát request) và minimumNumberOfCalls để tránh việc ngắt mạch sai lệch khi lượng traffic biến động lớn.
+  * Định hình được kịch bản kết hợp Retry thông minh: chỉ áp dụng Retry đối với các lỗi mạng tạm thời (Transient Errors) hoặc mã lỗi HTTP mang tính chất ngắn hạn (như 503 Service Unavailable), và tuyệt đối không Retry đối với các giao dịch tài chính đã trừ tiền để tránh lỗi trùng lặp dữ liệu (Idempotency).
 
-* Cài đặt và cấu hình AWS CLI trên máy tính bao gồm:
-  * Access Key
-  * Secret Key
-  * Region mặc định
-  * ...
+* Hệ thống hóa cơ chế kiểm soát dòng chảy traffic bảo vệ tài nguyên lõi:
+  * Nắm vững cách triển khai thuật toán Token Bucket thông qua bộ lọc tự định nghĩa LocalRateLimiter tại API Gateway, giải quyết bài toán chống nghẽn cho các API cốt lõi trong giờ cao điểm (như thanh toán hóa đơn, chuyển khoản nhanh 24/7).
+  * Hiểu rõ cách cấu hình linh hoạt các tham số capacity (sức chứa tối đa), refillTokens (tốc độ nạp lại) và refillPeriodMs (khoảng thời gian nạp lại) của Token Bucket phù hợp với cấu hình giới hạn tần suất.
+  * Thiết lập thành công luồng điều phối lỗi: Khi một request vi phạm giới hạn dòng chảy, hệ thống sẽ bị chặn ngay tại Gateway với mã lỗi HTTP 429 Too Many Requests đi kèm cấu hình bảo mật tiêu chuẩn, giảm thiểu tối đa tải trọng xử lý cho các dịch vụ Backend phía sau.
 
-* Sử dụng AWS CLI để thực hiện các thao tác cơ bản như:
+* Thực hành dịch chuyển và tối ưu hóa kiến trúc chịu tải tại tầng API Gateway:
+  * Triển khai thành công dịch vụ API Gateway, thiết lập điểm trung chuyển tập trung giúp bảo vệ toàn bộ kiến trúc mạng lưới Microservices phía sau.
+  * Tích hợp bộ lọc tự định nghĩa LocalRateLimiter (Token Bucket) tại Gateway, giúp hệ thống chặn đứng các yêu cầu quá tải ngay tại cửa ngõ mà không phụ thuộc vào bộ lưu trữ ngoài.
+  * Hoàn thành việc loại bỏ cấu hình Rate Limit cục bộ tại Account Service, giúp mã nguồn dịch vụ tài khoản trở nên tinh gọn (Clean Code), giảm tải xử lý logic phụ trợ và tuân thủ nguyên tắc đơn nhiệm (Single Responsibility Principle).
+  * Thiết lập thành công luồng gọi nội bộ trực tiếp giữa Payment Service và Account Service để tối ưu hóa độ trễ, trong khi vẫn duy trì Circuit Breaker và Retry tại Payment Service.
 
-  * Kiểm tra thông tin tài khoản & cấu hình
-  * Lấy danh sách region
-  * Xem dịch vụ EC2
-  * Tạo và quản lý key pair
-  * Kiểm tra thông tin dịch vụ đang chạy
-  * ...
+* Hoàn thiện nội dung tài liệu báo cáo thu hoạch cho 03 Sự kiện thuộc chuỗi *First Cloud AI Journey*:
+  * **Event 1:** Đóng gói thành công bài viết chi tiết về tư duy giao tiếp hiệu quả với AI (Prompt Engineering), Token Economics để tối ưu chi phí và cách áp dụng mô hình AI Agent vào quy trình phát triển phần mềm chuyên nghiệp nhằm loại bỏ thói quen lập trình cảm tính ("Vibe Code").
+  * **Event 2:** Hoàn thiện nội dung phân tích sâu về tảng băng trôi của sự trì hoãn dưới góc nhìn tâm lý học sinh viên; đúc kết thành công sơ đồ kiến trúc di chuyển dữ liệu, tối ưu chi phí (FinOps) và pipeline GenAI có kiểm soát chất lượng đầu ra (Output Validator) cho mô hình Startup.
+  * **Event 3:** Cấu trúc hóa rõ ràng các bài học kỹ thuật chuyên sâu về quản lý Session kết nối WebSocket qua DynamoDB, cơ chế phân lớp Layer dữ liệu của Docker Container, giải pháp bảo mật NIDS dựa trên Học máy và bản đồ học tập 8 bước cốt lõi của một kỹ sư Modern DevOps thực chiến.
+* Nâng cao tư duy tổng hợp và định hướng hành động:
+  * Chuyển hóa thành công các trải nghiệm thực tế từ hội thảo thành bộ quy tắc ứng dụng vào công việc hiện tại (bẻ gãy sự trì hoãn bằng quy tắc 5 giây/5 phút, thiết kế cấu trúc prompt tối ưu, chuẩn bị lộ trình container hóa dự án và pilot tích hợp các dịch vụ Serverless AWS).
 
-* Có khả năng kết nối giữa giao diện web và CLI để quản lý tài nguyên AWS song song.
-* ...
-
-
+* Hoàn thành 100% nội dung tài liệu báo cáo kỹ thuật cho 03 bài Blog đã đăng tải trên AWS Study Group VN:
+  * **Blog 1 (DevOps):** Đóng gói hoàn chỉnh giải pháp CI/CD tinh gọn cho ứng dụng Container; chứng minh năng lực thiết lập quy trình tự động hóa cấu hình mạng, Application Load Balancer (ALB) và Auto Scaling của chế độ ECS Express Mode kết hợp tính truy vết phiên bản (Traceability).
+  * **Blog 2 (Cloud Operations):** Hoàn thiện tài liệu kiến trúc phục hồi thảm họa sử dụng Velero kết hợp cơ chế xác thực bảo mật EKS Pod Identity theo nguyên tắc Least Privilege, làm chủ tính năng namespaceMapping để khôi phục ứng dụng linh hoạt chéo vùng.
+  * **Blog 3 (FinOps):** Đúc kết thành công giải pháp quản trị dữ liệu hạ tầng dài hạn vượt qua giới hạn 90 ngày của AWS Console; cấu trúc hóa các hàm toán học nâng cao (CAST, ROUND) trong câu lệnh Athena SQL phục vụ phân tích xu hướng chi phí theo năm và tối ưu tài chính đám mây.
+* Giá trị học tập và đóng gói chuyên môn:
+  * Chuyển hóa toàn bộ chuỗi lab thực hành thực tế và các lỗi hạ tầng đã fix (như lỗi lập lịch node EKS, lỗi vỡ ký tự terminal Windows) thành bộ tài liệu có cấu trúc bảng biểu phân tích phạm vi công nghệ rõ ràng.
+ 

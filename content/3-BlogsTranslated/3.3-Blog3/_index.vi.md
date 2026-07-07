@@ -6,122 +6,63 @@ chapter: false
 pre: " <b> 3.3. </b> "
 ---
 
-{{% notice warning %}}
-⚠️ **Lưu ý:** Các thông tin dưới đây chỉ nhằm mục đích tham khảo, vui lòng **không sao chép nguyên văn** cho bài báo cáo của bạn kể cả warning này.
-{{% /notice %}}
+# BỨT PHÁ GIỚI HẠN 90 NGÀY CỦA EC2 CAPACITY MANAGER VỚI AMAZON ATHENA
 
-# Bắt đầu với healthcare data lakes: Sử dụng microservices
+Trong quản trị hạ tầng AWS quy mô lớn, việc kiểm soát và dự phóng chi phí máy chủ luôn là bài toán hóc búa đối với các doanh nghiệp. Để hỗ trợ các kỹ sư theo dõi tài nguyên, Amazon EC2 Capacity Manager mang lại cái nhìn tập trung về tình hình sử dụng dung lượng (On-Demand, Spot, ODCR) xuyên suốt các tài khoản và Region trong toàn bộ tổ chức.
 
-Các data lake có thể giúp các bệnh viện và cơ sở y tế chuyển dữ liệu thành những thông tin chi tiết về doanh nghiệp và duy trì hoạt động kinh doanh liên tục, đồng thời bảo vệ quyền riêng tư của bệnh nhân. **Data lake** là một kho lưu trữ tập trung, được quản lý và bảo mật để lưu trữ tất cả dữ liệu của bạn, cả ở dạng ban đầu và đã xử lý để phân tích. data lake cho phép bạn chia nhỏ các kho chứa dữ liệu và kết hợp các loại phân tích khác nhau để có được thông tin chi tiết và đưa ra các quyết định kinh doanh tốt hơn.
-
-Bài đăng trên blog này là một phần của loạt bài lớn hơn về việc bắt đầu cài đặt data lake dành cho lĩnh vực y tế. Trong bài đăng blog cuối cùng của tôi trong loạt bài, *“Bắt đầu với data lake dành cho lĩnh vực y tế: Đào sâu vào Amazon Cognito”*, tôi tập trung vào các chi tiết cụ thể của việc sử dụng Amazon Cognito và Attribute Based Access Control (ABAC) để xác thực và ủy quyền người dùng trong giải pháp data lake y tế. Trong blog này, tôi trình bày chi tiết cách giải pháp đã phát triển ở cấp độ cơ bản, bao gồm các quyết định thiết kế mà tôi đã đưa ra và các tính năng bổ sung được sử dụng. Bạn có thể truy cập các code samples cho giải pháp tại Git repo này để tham khảo.
+Tuy nhiên, một điểm nghẽn lớn khi vận hành thực tế là: Hệ thống chỉ lưu trữ tối đa 90 ngày dữ liệu lịch sử trên AWS Management Console. Điều này gây rất nhiều khó khăn khi đội ngũ FinOps cần phân tích xu hướng dài hạn theo năm, lập kế hoạch ngân sách hoặc đánh giá hiệu quả của các gói đặt trước dung lượng (ODCR) đã mua từ trước. Bài viết này tổng hợp chi tiết kiến trúc, quy trình tự động hóa phân vùng và các kịch bản SQL thực tế nhằm làm chủ dữ liệu hạ tầng dài hạn.
 
 ---
 
-## Hướng dẫn kiến trúc
+## 1. Các ưu điểm cốt lõi của giải pháp
 
-Thay đổi chính kể từ lần trình bày cuối cùng của kiến trúc tổng thể là việc tách dịch vụ đơn lẻ thành một tập hợp các dịch vụ nhỏ để cải thiện khả năng bảo trì và tính linh hoạt. Việc tích hợp một lượng lớn dữ liệu y tế khác nhau thường yêu cầu các trình kết nối chuyên biệt cho từng định dạng; bằng cách giữ chúng được đóng gói riêng biệt với microservices, chúng ta có thể thêm, xóa và sửa đổi từng trình kết nối mà không ảnh hưởng đến những kết nối khác. Các microservices được kết nối rời thông qua tin nhắn publish/subscribe tập trung trong cái mà tôi gọi là “pub/sub hub”.
+Kiến trúc triển khai tập trung tối ưu hóa hệ thống dựa trên hai khía cạnh quan trọng: khả năng lưu trữ dài hạn và năng lực truy vấn dữ liệu thông minh trên quy mô lớn.
 
-Giải pháp này đại diện cho những gì tôi sẽ coi là một lần lặp nước rút hợp lý khác từ last post của tôi. Phạm vi vẫn được giới hạn trong việc nhập và phân tích cú pháp đơn giản của các **HL7v2 messages** được định dạng theo **Quy tắc mã hóa 7 (ER7)** thông qua giao diện REST.
-
-**Kiến trúc giải pháp bây giờ như sau:**
-
-> *Hình 1. Kiến trúc tổng thể; những ô màu thể hiện những dịch vụ riêng biệt.*
+- **Vượt qua giới hạn lưu trữ dữ liệu:** Giải pháp cho phép tự động đóng gói toàn bộ dữ liệu hạ tầng (On-Demand, Spot, ODCR) hàng giờ (`Hourly`) thành file nén tối ưu định dạng Parquet (Snappy), giúp doanh nghiệp lưu trữ vĩnh viễn trên Amazon S3 phục vụ phân tích xu hướng theo năm.
+- **Tự động hóa với Partition Projection:** Loại bỏ hoàn toàn việc vận hành các công cụ quét dữ liệu (AWS Glue Crawler) thủ công hàng ngày để cập nhật metadata. Bằng cách thiết lập thuộc tính `TBLPROPERTIES` trong Athena, hệ thống tự động tính toán và nhận diện các phân vùng thư mục ngày/giờ mới ngay tại thời điểm truy vấn.
+- **Bảo mật phân tách tài nguyên qua Bucket Policy:** Áp dụng các mệnh đề điều kiện (`Condition`) khắt khe như `aws:SourceAccount` và `ArnLike` gắn với đường dẫn export cụ thể, đảm bảo chỉ cấp quyền ghi dữ liệu tự động cho duy nhất service của EC2 Capacity Manager theo nguyên tắc đặc quyền tối thiểu (Least Privilege).
 
 ---
 
-Mặc dù thuật ngữ *microservices* có một số sự mơ hồ cố hữu, một số đặc điểm là chung:  
-- Chúng nhỏ, tự chủ, kết hợp rời rạc  
-- Có thể tái sử dụng, giao tiếp thông qua giao diện được xác định rõ  
-- Chuyên biệt để giải quyết một việc  
-- Thường được triển khai trong **event-driven architecture**
+## 2. Quy trình hoạt động của hệ thống
 
-Khi xác định vị trí tạo ranh giới giữa các microservices, cần cân nhắc:  
-- **Nội tại**: công nghệ được sử dụng, hiệu suất, độ tin cậy, khả năng mở rộng  
-- **Bên ngoài**: chức năng phụ thuộc, tần suất thay đổi, khả năng tái sử dụng  
-- **Con người**: quyền sở hữu nhóm, quản lý *cognitive load*
+Luồng xử lý dữ liệu của giải pháp được chia tách rõ ràng thành hai giai đoạn độc lập thông qua cấu hình dịch vụ AWS:
+
+- **Khi xuất dữ liệu (Data Export):** EC2 Capacity Manager tiếp nhận cấu hình, định kỳ hàng giờ tiến hành quét, tổng hợp số liệu sử dụng tài nguyên của toàn bộ các tài khoản/Region rồi nén và đẩy trực tiếp về S3 Bucket theo cấu trúc phân vùng thư mục ngày/giờ (`y=YYYY/m=MM/d=DD/h=HH`).
+- **Khi truy vấn (Querying):** Kỹ sư FinOps thực thi câu lệnh SQL trên Amazon Athena. Lúc này, Athena không quét toàn bộ bucket mà dựa trên các tham số cấu hình Partition Projection để tính toán chính xác đường dẫn thư mục cần đọc, giúp trả về kết quả phân tích chỉ trong vài giây với lượng dữ liệu quét tối thiểu.
 
 ---
 
-## Lựa chọn công nghệ và phạm vi giao tiếp
+![EC2 Capacity Manager](/images/105.png)
+## 3. Lựa chọn công nghệ và phạm vi lưu trữ
 
-| Phạm vi giao tiếp                        | Các công nghệ / mô hình cần xem xét                                                        |
-| ---------------------------------------- | ------------------------------------------------------------------------------------------ |
-| Trong một microservice                   | Amazon Simple Queue Service (Amazon SQS), AWS Step Functions                               |
-| Giữa các microservices trong một dịch vụ | AWS CloudFormation cross-stack references, Amazon Simple Notification Service (Amazon SNS) |
-| Giữa các dịch vụ                         | Amazon EventBridge, AWS Cloud Map, Amazon API Gateway                                      |
-
----
-
-## The pub/sub hub
-
-Việc sử dụng kiến trúc **hub-and-spoke** (hay message broker) hoạt động tốt với một số lượng nhỏ các microservices liên quan chặt chẽ.  
-- Mỗi microservice chỉ phụ thuộc vào *hub*  
-- Kết nối giữa các microservice chỉ giới hạn ở nội dung của message được xuất  
-- Giảm số lượng synchronous calls vì pub/sub là *push* không đồng bộ một chiều
-
-Nhược điểm: cần **phối hợp và giám sát** để tránh microservice xử lý nhầm message.
+| Thành phần hệ thống | Công nghệ sử dụng | Vai trò trong kiến trúc |
+| :--- | :--- | :--- |
+| **Data Collection** | EC2 Capacity Manager | Thu thập dữ liệu sử dụng hạ tầng (On-Demand, Spot, ODCR) tập trung |
+| **Data Storage** | Amazon S3 | Kho lưu trữ dữ liệu lịch sử dài hạn dưới định dạng nén Parquet (Snappy) |
+| **Metadata Store** | AWS Glue Data Catalog | Lưu trữ định nghĩa cấu trúc bảng (Schema) để Amazon Athena tham chiếu |
+| **Data Analytics** | Amazon Athena | Thực thi các câu lệnh SQL nâng cao để lọc và trích xuất báo cáo FinOps |
 
 ---
 
-## Core microservice
+## 4. Các kịch bản tối ưu chi phí (FinOps) khi triển khai thực tế
 
-Cung cấp dữ liệu nền tảng và lớp truyền thông, gồm:  
-- **Amazon S3** bucket cho dữ liệu  
-- **Amazon DynamoDB** cho danh mục dữ liệu  
-- **AWS Lambda** để ghi message vào data lake và danh mục  
-- **Amazon SNS** topic làm *hub*  
-- **Amazon S3** bucket cho artifacts như mã Lambda
+Giải pháp mở ra năng lực tối ưu hóa chi phí hạ tầng chuyên sâu thông qua 3 kịch bản truy vấn SQL thực tế được áp dụng trực tiếp trên hệ thống:
 
-> Chỉ cho phép truy cập ghi gián tiếp vào data lake qua hàm Lambda → đảm bảo nhất quán.
+### Săn tìm các gói ODCR lãng phí
+Hệ thống sử dụng các hàm toán học nâng cao (`CAST`, `ROUND`) để lọc và định vị chính xác mã `reservationid` của các gói đặt trước dung lượng hoạt động kém hiệu quả (hiệu suất sử dụng < 50%) nhưng vẫn bị tính tiền, tính toán ra số tiền thâm hụt hàng giờ (`wasted_cost_usd`) để doanh nghiệp kịp thời hủy hoặc điều chuyển tài nguyên.
 
----
+### Nhận diện quy luật tải đỉnh (Peak Usage)
+Khai thác tập dữ liệu thuộc nhóm `Instance Usage` để tính toán lượng máy chủ chạy thực tế trung bình theo từng khung giờ trong ngày (từ 00h đến 23h). Quy trình phân tích này giúp xác định chính xác thời điểm hệ thống chạm ngưỡng cao điểm, làm cơ sở để đưa ra chiến lược mua sắm gói tài nguyên hợp lý.
 
-## Front door microservice
-
-- Cung cấp API Gateway để tương tác REST bên ngoài  
-- Xác thực & ủy quyền dựa trên **OIDC** thông qua **Amazon Cognito**  
-- Cơ chế *deduplication* tự quản lý bằng DynamoDB thay vì SNS FIFO vì:
-  1. SNS deduplication TTL chỉ 5 phút
-  2. SNS FIFO yêu cầu SQS FIFO
-  3. Chủ động báo cho sender biết message là bản sao
+### Chia sẻ tài nguyên nội bộ thông minh
+Truy vấn đi sâu vào dữ liệu ở cấp độ khu vực hạ tầng vật lý Availability Zone (`az-id`) để tìm ra vùng nào đang thừa công suất. Số liệu này giúp doanh nghiệp chủ động điều phối, chia sẻ dung lượng trống cho các đội ngũ (team) khác dùng chung và tiến hành dọn dẹp sạch sẽ toàn bộ tài nguyên thử nghiệm sau khi hoàn tất.
 
 ---
 
-## Staging ER7 microservice
+![Athena SQL Query Results](/images/103.png)
+## 5. Lời kết
 
-- Lambda “trigger” đăng ký với pub/sub hub, lọc message theo attribute  
-- Step Functions Express Workflow để chuyển ER7 → JSON  
-- Hai Lambda:
-  1. Sửa format ER7 (newline, carriage return)
-  2. Parsing logic  
-- Kết quả hoặc lỗi được đẩy lại vào pub/sub hub
+Sự kết hợp giữa EC2 Capacity Manager, S3 và Athena mang lại một giải pháp quản trị và tối ưu chi phí hạ tầng toàn diện vượt qua giới hạn lưu trữ thông thường. Phương án tiếp cận này giúp các doanh nghiệp chuyển dịch từ thế bị động giải quyết chi phí phát sinh sang chủ động làm chủ dữ liệu, tối ưu hóa hạ tầng và nâng cao hiệu quả tài chính trên đám mây AWS.
 
----
-
-## Tính năng mới trong giải pháp
-
-### 1. AWS CloudFormation cross-stack references
-Ví dụ *outputs* trong core microservice:
-```yaml
-Outputs:
-  Bucket:
-    Value: !Ref Bucket
-    Export:
-      Name: !Sub ${AWS::StackName}-Bucket
-  ArtifactBucket:
-    Value: !Ref ArtifactBucket
-    Export:
-      Name: !Sub ${AWS::StackName}-ArtifactBucket
-  Topic:
-    Value: !Ref Topic
-    Export:
-      Name: !Sub ${AWS::StackName}-Topic
-  Catalog:
-    Value: !Ref Catalog
-    Export:
-      Name: !Sub ${AWS::StackName}-Catalog
-  CatalogArn:
-    Value: !GetAtt Catalog.Arn
-    Export:
-      Name: !Sub ${AWS::StackName}-CatalogArn
+Bài viết gốc: https://aws.amazon.com/vi/blogs/compute/maximize-amazon-ec2-capacity-reservations-with-capacity-manager-data-exports/

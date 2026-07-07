@@ -5,122 +5,69 @@ weight: 1
 chapter: false
 pre: " <b> 3.1. </b> "
 ---
-{{% notice warning %}}
-⚠️ **Lưu ý:** Các thông tin dưới đây chỉ nhằm mục đích tham khảo, vui lòng **không sao chép nguyên văn** cho bài báo cáo của bạn kể cả warning này.
-{{% /notice %}}
 
-# Bắt đầu với healthcare data lakes: Sử dụng microservices
+# Tự động hóa quy trình triển khai ứng dụng Container lên Amazon ECS Express Mode bằng GitHub Actions
 
-Các data lake có thể giúp các bệnh viện và cơ sở y tế chuyển dữ liệu thành những thông tin chi tiết về doanh nghiệp và duy trì hoạt động kinh doanh liên tục, đồng thời bảo vệ quyền riêng tư của bệnh nhân. **Data lake** là một kho lưu trữ tập trung, được quản lý và bảo mật để lưu trữ tất cả dữ liệu của bạn, cả ở dạng ban đầu và đã xử lý để phân tích. data lake cho phép bạn chia nhỏ các kho chứa dữ liệu và kết hợp các loại phân tích khác nhau để có được thông tin chi tiết và đưa ra các quyết định kinh doanh tốt hơn.
+Trong kỷ nguyên DevOps, việc tối ưu hóa pipeline CI/CD để rút ngắn thời gian đưa sản phẩm ra thị trường là ưu tiên hàng đầu. Khi ứng dụng được container hóa, quy trình đóng gói và triển khai thủ công thường dễ phát sinh lỗi và tốn thời gian. 
 
-Bài đăng trên blog này là một phần của loạt bài lớn hơn về việc bắt đầu cài đặt data lake dành cho lĩnh vực y tế. Trong bài đăng blog cuối cùng của tôi trong loạt bài, *“Bắt đầu với data lake dành cho lĩnh vực y tế: Đào sâu vào Amazon Cognito”*, tôi tập trung vào các chi tiết cụ thể của việc sử dụng Amazon Cognito và Attribute Based Access Control (ABAC) để xác thực và ủy quyền người dùng trong giải pháp data lake y tế. Trong blog này, tôi trình bày chi tiết cách giải pháp đã phát triển ở cấp độ cơ bản, bao gồm các quyết định thiết kế mà tôi đã đưa ra và các tính năng bổ sung được sử dụng. Bạn có thể truy cập các code samples cho giải pháp tại Git repo này để tham khảo.
+Giải pháp tự động hóa bằng **GitHub Actions** kết hợp với **Amazon ECS Express Mode** giúp đơn giản hóa toàn bộ hạ tầng từ mạng, tải cân bằng đến việc cấp phát tài nguyên mà không cần cấu hình thủ công. Bài viết này tổng hợp kiến trúc, quy trình vận hành và kinh nghiệm thực tế khi xây dựng pipeline CI/CD an toàn, tự động hóa hoàn toàn từ mã nguồn đến môi trường chạy live.
 
 ---
 
-## Hướng dẫn kiến trúc
+## 1. Các ưu điểm cốt lõi của giải pháp
 
-Thay đổi chính kể từ lần trình bày cuối cùng của kiến trúc tổng thể là việc tách dịch vụ đơn lẻ thành một tập hợp các dịch vụ nhỏ để cải thiện khả năng bảo trì và tính linh hoạt. Việc tích hợp một lượng lớn dữ liệu y tế khác nhau thường yêu cầu các trình kết nối chuyên biệt cho từng định dạng; bằng cách giữ chúng được đóng gói riêng biệt với microservices, chúng ta có thể thêm, xóa và sửa đổi từng trình kết nối mà không ảnh hưởng đến những kết nối khác. Các microservices được kết nối rời thông qua tin nhắn publish/subscribe tập trung trong cái mà tôi gọi là “pub/sub hub”.
+Hệ thống được thiết kế nhằm tối ưu tốc độ triển khai và loại bỏ các rủi ro bảo mật tiềm ẩn nhờ vào các cơ chế hiện đại:
 
-Giải pháp này đại diện cho những gì tôi sẽ coi là một lần lặp nước rút hợp lý khác từ last post của tôi. Phạm vi vẫn được giới hạn trong việc nhập và phân tích cú pháp đơn giản của các **HL7v2 messages** được định dạng theo **Quy tắc mã hóa 7 (ER7)** thông qua giao diện REST.
-
-**Kiến trúc giải pháp bây giờ như sau:**
-
-> *Hình 1. Kiến trúc tổng thể; những ô màu thể hiện những dịch vụ riêng biệt.*
+- **Xác thực an toàn qua OIDC:** Thay vì lưu trữ các thông tin xác thực tĩnh như AWS Access Key dài hạn trong GitHub Secrets (gây rủi ro lộ lọt dữ liệu), hệ thống thiết lập cơ chế tin cậy thông qua OpenID Connect (OIDC). Mỗi khi workflow chạy, GitHub Actions sẽ tự động assume một IAM role ngắn hạn để tương tác với AWS.
+- **Tự động hóa hạ tầng với ECS Express Mode:** Điểm vượt trội của Express Mode là khả năng tự động thiết lập và quản lý các thành phần phức tạp bao gồm: Application Load Balancer (ALB), Target Groups, Security Groups, cơ chế Auto Scaling dựa trên CPU và cung cấp sẵn URL truy cập có chứng chỉ định danh từ AWS.
+- **Quản lý phiên bản chính xác (Traceability):** Docker image khi build xong sẽ được gắn tag tự động dựa trên 7 ký tự đầu của Commit SHA. Điều này giúp đội ngũ phát triển dễ dàng truy vết mã nguồn, kiểm soát các phiên bản và thực hiện rollback (quay lui) nhanh chóng khi có sự cố.
 
 ---
 
-Mặc dù thuật ngữ *microservices* có một số sự mơ hồ cố hữu, một số đặc điểm là chung:  
-- Chúng nhỏ, tự chủ, kết hợp rời rạc  
-- Có thể tái sử dụng, giao tiếp thông qua giao diện được xác định rõ  
-- Chuyên biệt để giải quyết một việc  
-- Thường được triển khai trong **event-driven architecture**
+## 2. Quy trình hoạt động của hệ thống
 
-Khi xác định vị trí tạo ranh giới giữa các microservices, cần cân nhắc:  
-- **Nội tại**: công nghệ được sử dụng, hiệu suất, độ tin cậy, khả năng mở rộng  
-- **Bên ngoài**: chức năng phụ thuộc, tần suất thay đổi, khả năng tái sử dụng  
-- **Con người**: quyền sở hữu nhóm, quản lý *cognitive load*
+Luồng xử lý tự động hóa được kích hoạt ngay khi lập trình viên thực hiện tương tác với kho mã nguồn:
+
+- **Giai đoạn CI (Tích hợp liên tục):** Khi code được đẩy lên nhánh `main`, GitHub Actions kích hoạt workflow. Hệ thống sử dụng OIDC để kết nối an toàn với AWS, tiến hành build Docker image từ mã nguồn, gắn tag theo Commit SHA và đẩy (push) image lên kho lưu trữ riêng tư Amazon ECR.
+- **Giai đoạn CD (Triển khai liên tục):** Sau khi image được đẩy thành công, Action `amazon-ecs-deploy-express-service` sẽ gọi API của AWS để cập nhật dịch vụ. ECS Express Mode sẽ tự động khởi tạo/cập nhật cụm máy chủ, điều phối các Task chạy trên nền tảng AWS Fargate không máy chủ và định tuyến lưu lượng truy cập từ Load Balancer đến container mới một cách mượt mà.
+
+---
+![CI/CD Architecture Diagram](/images/106.png)
+## 3. Lựa chọn công nghệ và vai trò hệ thống
+
+| Thành phần hệ thống | Công nghệ sử dụng | Vai trò trong kiến trúc |
+| :--- | :--- | :--- |
+| **Pipeline CI/CD** | GitHub Actions | Tự động hóa toàn bộ quy trình build, tag, push và kích hoạt deploy ứng dụng |
+| **Container Storage** | Amazon ECR | Lưu trữ tập trung và quản lý bảo mật các phiên bản Docker Image |
+| **Container Orchestration** | Amazon ECS Express Mode | Tự động quản lý dịch vụ, cấu hình mạng và cân bằng tải cho container |
+| **Serverless Compute** | AWS Fargate | Cung cấp tài nguyên tính toán để chạy container mà không cần quản lý EC2 |
+| **Identity & Access** | IAM & OIDC Provider | Xác thực không mật khẩu, cấp quyền ngắn hạn theo nguyên tắc Least Privilege |
 
 ---
 
-## Lựa chọn công nghệ và phạm vi giao tiếp
+## 4. Lưu ý kỹ thuật khi triển khai thực tế
 
-| Phạm vi giao tiếp                        | Các công nghệ / mô hình cần xem xét                                                        |
-| ---------------------------------------- | ------------------------------------------------------------------------------------------ |
-| Trong một microservice                   | Amazon Simple Queue Service (Amazon SQS), AWS Step Functions                               |
-| Giữa các microservices trong một dịch vụ | AWS CloudFormation cross-stack references, Amazon Simple Notification Service (Amazon SNS) |
-| Giữa các dịch vụ                         | Amazon EventBridge, AWS Cloud Map, Amazon API Gateway                                      |
+Qua quá trình thực hành cấu hình và tối ưu pipeline, một số điểm mấu chốt cần lưu ý để đảm bảo hệ thống vận hành ổn định:
 
----
+### Cấp quyền tối thiểu cho IAM Policy
+Để đảm bảo an toàn thông tin, các IAM Policy đính kèm vào `github-actions-ecs-role` cần được siết chặt. Thay vì sử dụng ký tự đại diện `*` cho tất cả tài nguyên, hãy giới hạn chính xác ARN của Amazon ECR Repository và Amazon ECS Cluster cụ thể để tránh việc một repository bị hack có thể can thiệp sang các tài nguyên khác.
 
-## The pub/sub hub
+![IAM OIDC Role](/images/78.png)
 
-Việc sử dụng kiến trúc **hub-and-spoke** (hay message broker) hoạt động tốt với một số lượng nhỏ các microservices liên quan chặt chẽ.  
-- Mỗi microservice chỉ phụ thuộc vào *hub*  
-- Kết nối giữa các microservice chỉ giới hạn ở nội dung của message được xuất  
-- Giảm số lượng synchronous calls vì pub/sub là *push* không đồng bộ một chiều
+### Theo dõi tiến trình tự động hóa trên GitHub Actions
+Khi đẩy code lên nhánh chính, toàn bộ tiến trình đóng gói từ build Dockerfile, đăng nhập ECR cho đến khi gọi lệnh deploy lên ECS Express Mode cần được giám sát chặt chẽ qua log realtime để phát hiện sớm các xung đột phụ thuộc hoặc lỗi phân quyền.
 
-Nhược điểm: cần **phối hợp và giám sát** để tránh microservice xử lý nhầm message.
+![GitHub Actions Workflow](/images/77.png)
 
----
+### Kiểm tra trạng thái dịch vụ trên Amazon ECS Express Mode
+Sau khi workflow báo thành công, Express Mode sẽ tự động tạo cấu hình định tuyến và cân bằng tải. Ứng dụng container chạy trên AWS Fargate lúc này có thể truy cập trực tiếp thông qua endpoint mặc định được AWS cấp sẵn.
 
-## Core microservice
-
-Cung cấp dữ liệu nền tảng và lớp truyền thông, gồm:  
-- **Amazon S3** bucket cho dữ liệu  
-- **Amazon DynamoDB** cho danh mục dữ liệu  
-- **AWS Lambda** để ghi message vào data lake và danh mục  
-- **Amazon SNS** topic làm *hub*  
-- **Amazon S3** bucket cho artifacts như mã Lambda
-
-> Chỉ cho phép truy cập ghi gián tiếp vào data lake qua hàm Lambda → đảm bảo nhất quán.
+![Amazon ECS Express Service](/images/79.png)
 
 ---
 
-## Front door microservice
+## 5. Lời kết
 
-- Cung cấp API Gateway để tương tác REST bên ngoài  
-- Xác thực & ủy quyền dựa trên **OIDC** thông qua **Amazon Cognito**  
-- Cơ chế *deduplication* tự quản lý bằng DynamoDB thay vì SNS FIFO vì:
-  1. SNS deduplication TTL chỉ 5 phút
-  2. SNS FIFO yêu cầu SQS FIFO
-  3. Chủ động báo cho sender biết message là bản sao
+Việc kết hợp giữa GitHub Actions và Amazon ECS Express Mode mang lại một giải pháp CI/CD tinh gọn, mạnh mẽ và có độ an toàn cao cho các ứng dụng container hóa. Nhờ việc giải phóng gánh nặng quản lý hạ tầng mạng và máy chủ, đội ngũ phát triển có thể tập trung hoàn toàn vào việc tối ưu mã nguồn, nâng cao chất lượng sản phẩm và tăng tốc độ phát hành ứng dụng.
 
----
-
-## Staging ER7 microservice
-
-- Lambda “trigger” đăng ký với pub/sub hub, lọc message theo attribute  
-- Step Functions Express Workflow để chuyển ER7 → JSON  
-- Hai Lambda:
-  1. Sửa format ER7 (newline, carriage return)
-  2. Parsing logic  
-- Kết quả hoặc lỗi được đẩy lại vào pub/sub hub
-
----
-
-## Tính năng mới trong giải pháp
-
-### 1. AWS CloudFormation cross-stack references
-Ví dụ *outputs* trong core microservice:
-```yaml
-Outputs:
-  Bucket:
-    Value: !Ref Bucket
-    Export:
-      Name: !Sub ${AWS::StackName}-Bucket
-  ArtifactBucket:
-    Value: !Ref ArtifactBucket
-    Export:
-      Name: !Sub ${AWS::StackName}-ArtifactBucket
-  Topic:
-    Value: !Ref Topic
-    Export:
-      Name: !Sub ${AWS::StackName}-Topic
-  Catalog:
-    Value: !Ref Catalog
-    Export:
-      Name: !Sub ${AWS::StackName}-Catalog
-  CatalogArn:
-    Value: !GetAtt Catalog.Arn
-    Export:
-      Name: !Sub ${AWS::StackName}-CatalogArn
+Bài viết gốc: https://aws.amazon.com/blogs/containers/automated-deployments-with-github-actions-for-amazon-ecs-express-mode/
