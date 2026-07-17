@@ -11,105 +11,142 @@ pre: " <b> 2. </b> "
 
 In this section, you need to summarize the contents of the workshop that you **plan** to conduct.
 
-# IoT Weather Platform for Lab Research
-## A Unified AWS Serverless Solution for Real-Time Weather Monitoring
+# High-Concurrency Payment Gateway Infrastructure on AWS
+## 3-Tier Secure Networking with ECS Fargate and S3 Backup
 
 ### 1. Executive Summary
-The IoT Weather Platform is designed for the ITea Lab team in Ho Chi Minh City to enhance weather data collection and analysis. It supports up to 5 weather stations, with potential scalability to 10-15, utilizing Raspberry Pi edge devices with ESP32 sensors to transmit data via MQTT. The platform leverages AWS Serverless services to deliver real-time monitoring, predictive analytics, and cost efficiency, with access restricted to 5 lab members via Amazon Cognito.
+The **High-Concurrency Payment Gateway** project is designed to provide a highly secure, scalable, and resilient cloud infrastructure on AWS for a microservice-based payment application. The goal is to migrate the Payment Gateway from local development environments to a production-grade AWS architecture. The design utilizes a **3-tier VPC network (Public/Private Subnets)** to isolate critical systems. Computing workloads are run on serverless **AWS ECS Fargate** (hosting Frontend Nginx, Spring Boot Backend microservices, and a Redis sidecar cache), while transaction data is stored in a private **Amazon RDS PostgreSQL** instance. Real-time logging, alarms, and automated database backups are integrated using **Amazon CloudWatch**, **Amazon SNS**, and encrypted **Amazon S3** snapshot exports with customer-managed KMS keys.
 
 ### 2. Problem Statement
-### What’s the Problem?
-Current weather stations require manual data collection, becoming unmanageable with multiple units. There is no centralized system for real-time data or analytics, and third-party platforms are costly and overly complex.
+#### What’s the Problem?
+Traditional payment processing systems deployed on-premises or single virtual machines face several key issues:
+- **Security Vulnerabilities:** Databases and backend APIs containing sensitive financial and user credentials are directly exposed to the public Internet (using Public IPs).
+- **Poor Scalability:** Inability to handle rapid spikes in transaction volumes (such as flash sales), leading to service latency or server crashes.
+- **Lack of Monitoring:** Administrators lack real-time visibility and instant alerts when compute tasks crash or traffic surges.
+- **Data Loss Risks:** Database backup processes are often manual, unencrypted, and stored insecurely, posing a threat to business continuity.
 
-### The Solution
-The platform uses AWS IoT Core to ingest MQTT data, AWS Lambda and API Gateway for processing, Amazon S3 for storage (including a data lake), and AWS Glue Crawlers and ETL jobs to extract, transform, and load data from the S3 data lake to another S3 bucket for analysis. AWS Amplify with Next.js provides the web interface, and Amazon Cognito ensures secure access. Similar to Thingsboard and CoreIoT, users can register new devices and manage connections, though this platform operates on a smaller scale and is designed for private use. Key features include real-time dashboards, trend analysis, and low operational costs.
+#### The Solution
+This AWS-based architecture resolves these challenges:
+- **Network Isolation:** All backend containers and the RDS database run in isolated **Private Subnets**, communicating outbound only through a **NAT Gateway**.
+- **Serverless Compute:** Deploying application layers on **AWS ECS Fargate** eliminates virtual machine (EC2) OS patching and management overhead.
+- **High Availability & Routing:** An **Application Load Balancer (ALB)** in **Public Subnets** intercepts public HTTP traffic (port 80), routing API queries (`/api/*`) to the backend API Gateway (port 8080) and serving static files via the Frontend Nginx containers.
+- **Real-time Alerting:** A **CloudWatch Alarm** triggers an **Amazon SNS** topic to dispatch email alerts to administrators if traffic exceeds the defined threshold (RequestCount > 100 requests/minute).
+- **Secure Backup:** Database Snapshots are taken and exported to an **Amazon S3 Bucket**, encrypted with a custom-managed symmetric **KMS Key** to ensure enterprise-grade security.
+- **EC2 Bastion Host:** A temporary jump box is deployed in the Public Subnet only during initial schema seeding, and terminated immediately after to minimize cost and attack surface.
 
-### Benefits and Return on Investment
-The solution establishes a foundational resource for lab members to develop a larger IoT platform, serving as a study resource, and provides a data foundation for AI enthusiasts for model training or analysis. It reduces manual reporting for each station via a centralized platform, simplifying management and maintenance, and improves data reliability. Monthly costs are $0.66 USD per the AWS Pricing Calculator, with a 12-month total of $7.92 USD. All IoT equipment costs are covered by the existing weather station setup, eliminating additional development expenses. The break-even period of 6-12 months is achieved through significant time savings from reduced manual work.
+#### Benefits and Return on Investment
+- **Compliance and Security:** Isolation of network resources and KMS data encryption align the platform with financial data security principles.
+- **Self-Healing Infrastructure:** Load balancer health checks monitor Fargate tasks, automatically recreating unhealthy tasks to maintain uptime.
+- **Cost Efficiency:** By leveraging Fargate serverless containers and stopping idle components, monthly infrastructure costs are optimized. Operational costs are estimated at $90 to $110 per month for load testing, offering a superior ROI compared to provisioning physical servers on-premises.
 
 ### 3. Solution Architecture
-The platform employs a serverless AWS architecture to manage data from 5 Raspberry Pi-based stations, scalable to 15. Data is ingested via AWS IoT Core, stored in an S3 data lake, and processed by AWS Glue Crawlers and ETL jobs to transform and load it into another S3 bucket for analysis. Lambda and API Gateway handle additional processing, while Amplify with Next.js hosts the dashboard, secured by Cognito. The architecture is detailed below:
+The architecture implements a 3-tier networking layout (Public, Private App, Private DB) within a custom AWS VPC:
 
-![IoT Weather Station Architecture](/images/2-Proposal/edge_architecture.jpeg)
+```mermaid
+graph TD
+    User([Trình duyệt Người dùng]) -->|Cổng HTTP 80| ALB[Application Load Balancer]
+    
+    subgraph VPC [Hạ tầng mạng AWS VPC 10.0.0.0/16]
+        subgraph PublicSubnets [Mạng công cộng - Public Subnets]
+            ALB
+            NGW[NAT Gateway]
+            EC2_B[EC2 Bastion Host <br> Cổng kết nối quản trị]
+        end
+        
+        subgraph PrivateSubnets [Mạng nội bộ bảo mật - Private Subnets]
+            F_FE[ECS Task: Frontend Nginx]
+            
+            subgraph BackendTask [ECS Task: pg-backend]
+                C_JAVA[Container: backend gộp <br> gateway, account, <br> payment, transaction]
+                C_REDIS[Container: redis sidecar]
+            end
+            
+            RDS[(Amazon RDS PostgreSQL <br> Private Instance)]
+        end
+    end
+    
+    S3[(Amazon S3 <br> Backup Bucket)]
+    
+    ALB -->|Mặc định /| F_FE
+    ALB -->|Đường dẫn /api/*| C_JAVA
+    
+    C_JAVA -->|Mạng nội bộ localhost:6379| C_REDIS
+    C_JAVA -->|Đăng ký JDBC cổng 5432| RDS
+    
+    EC2_B -->|Cổng 5432 nạp database| RDS
+    
+    RDS -->|Export Snapshot| S3
+    
+    F_FE & C_JAVA & C_REDIS -->|Kéo Image & Gửi Log| NGW -->|Kết nối ra ngoài| Internet((Internet công cộng))
+    NGW -->|Ghi logs| CW[CloudWatch Log Group]
+    
+    ALB -->|Chỉ số RequestCount| CWA[CloudWatch Alarm] -->|Kích hoạt cảnh báo| SNS[SNS Alerts Topic] -->|Gửi Mail| Mail(Hòm thư Email cá nhân)
+```
 
-![IoT Weather Platform Architecture](/images/2-Proposal/platform_architecture.jpeg)
+#### AWS Services Used
+- **Amazon VPC**: Drives network virtualization (4 Subnets, Route Tables, Internet Gateway, and NAT Gateway).
+- **AWS ECS Fargate**: Serverless container orchestration for Nginx Frontend and Java Backend.
+- **Amazon RDS (PostgreSQL)**: Fully-managed relational database isolated in Private Subnets.
+- **Amazon S3**: Secure object storage hosting compressed database snapshots.
+- **AWS KMS**: Manages the symmetric Customer Managed Key to encrypt snapshot exports.
+- **Amazon CloudWatch**: Collects log streams from tasks (`/ecs/pg-logs`) and evaluates traffic thresholds.
+- **Amazon SNS**: Distributes real-time email notifications.
+- **Amazon EC2**: Provisions the temporary Bastion Host for DB initialization.
 
-### AWS Services Used
-- **AWS IoT Core**: Ingests MQTT data from 5 stations, scalable to 15.
-- **AWS Lambda**: Processes data and triggers Glue jobs (two functions).
-- **Amazon API Gateway**: Facilitates web app communication.
-- **Amazon S3**: Stores raw data in a data lake and processed outputs (two buckets).
-- **AWS Glue**: Crawlers catalog data, and ETL jobs transform and load it.
-- **AWS Amplify**: Hosts the Next.js web interface.
-- **Amazon Cognito**: Secures access for lab users.
-
-### Component Design
-- **Edge Devices**: Raspberry Pi collects and filters sensor data, sending it to IoT Core.
-- **Data Ingestion**: AWS IoT Core receives MQTT messages from the edge devices.
-- **Data Storage**: Raw data is stored in an S3 data lake; processed data is stored in another S3 bucket.
-- **Data Processing**: AWS Glue Crawlers catalog the data, and ETL jobs transform it for analysis.
-- **Web Interface**: AWS Amplify hosts a Next.js app for real-time dashboards and analytics.
-- **User Management**: Amazon Cognito manages user access, allowing up to 5 active accounts.
+#### Component Design
+- **Frontend Task**: Runs an Nginx web server hosting the NextGenPay static interface, receiving traffic from the ALB on port 80.
+- **Backend Task**: A Multi-Container Task enclosing the Java/Spring Boot combined microservices (API Gateway, Account, Payment, Transaction services) and a Redis sidecar cache communicating on `localhost`.
+- **Database & Backup**: RDS PostgreSQL instance storing user balances and transactions. Manual snapshots are captured and exported to the S3 bucket, encrypted via `pg-s3-export-key`.
 
 ### 4. Technical Implementation
-**Implementation Phases**
-This project has two parts—setting up weather edge stations and building the weather platform—each following 4 phases:
-- Build Theory and Draw Architecture: Research Raspberry Pi setup with ESP32 sensors and design the AWS serverless architecture (1 month pre-internship)
-- Calculate Price and Check Practicality: Use AWS Pricing Calculator to estimate costs and adjust if needed (Month 1).
-- Fix Architecture for Cost or Solution Fit: Tweak the design (e.g., optimize Lambda with Next.js) to stay cost-effective and usable (Month 2).
-- Develop, Test, and Deploy: Code the Raspberry Pi setup, AWS services with CDK/SDK, and Next.js app, then test and release to production (Months 2-3).
+#### Implementation Phases
+The project execution is organized into 4 logical phases:
+1. **Application Packaging & Design:** Compile the Gradle Spring Boot project and static assets into Docker images, pushing them to ECR Private Repositories. Model the 3-tier VPC configuration.
+2. **Infrastructure provisioning:** Initialize the VPC, Route Tables, NAT Gateway, Security Groups, and RDS PostgreSQL instance. Access the private RDS database via a Bastion Host to execute schema creation.
+3. **Container Deployment:** Configure ALB Target Groups and Listener Rules, create ECS Task Definitions JSON, and spin up Frontend and Backend Fargate services.
+4. **Monitoring & Secure Backup:** Set up CloudWatch Alarms for the RequestCount metric and bind it to the SNS alerts topic. Create the KMS Key, apply appropriate IAM Policies, and export DB snapshots to S3.
 
-**Technical Requirements**
-- Weather Edge Station: Sensors (temperature, humidity, rainfall, wind speed), a microcontroller (ESP32), and a Raspberry Pi as the edge device. Raspberry Pi runs Raspbian, handles Docker for filtering, and sends 1 MB/day per station via MQTT over Wi-Fi.
-- Weather Platform: Practical knowledge of AWS Amplify (hosting Next.js), Lambda (minimal use due to Next.js), AWS Glue (ETL), S3 (two buckets), IoT Core (gateway and rules), and Cognito (5 users). Use AWS CDK/SDK to code interactions (e.g., IoT Core rules to S3). Next.js reduces Lambda workload for the fullstack web app.
+#### Technical Requirements
+- **Container Registry & Compute:** AWS ECR (2 private repositories), AWS ECS (Fargate cluster, Task execution role, Task Definitions with multi-container definitions).
+- **Secure Networking:** Custom VPC with 2 Public and 2 Private Subnets, NAT Gateway, Route Tables routing outbound traffic, and Security Groups enforcing least privilege (restricting DB ingress to EC2 Bastion and ECS tasks).
+- **Relational Storage & Backup:** Amazon RDS PostgreSQL, Amazon S3 for archival storage, AWS KMS Symmetric Key, and IAM Roles allowing the RDS Export service to assume permissions.
 
 ### 5. Timeline & Milestones
-**Project Timeline**
-- Pre-Internship (Month 0): 1 month for planning and old station review.
-- Internship (Months 1-3): 3 months.
-    - Month 1: Study AWS and upgrade hardware.
-    - Month 2: Design and adjust architecture.
-    - Month 3: Implement, test, and launch.
-- Post-Launch: Up to 1 year for research.
+- **Week 1:** Package the source code as Docker images and publish to AWS ECR. Set up the custom 3-tier VPC network, NAT Gateway, and Security Groups.
+- **Week 2:** Create the RDS PostgreSQL instance in Private Subnets. Spin up the Bastion Host to seed database schemas. Define ALB Target Groups and Listener Rules.
+- **Week 3:** Register ECS Task Definitions for Frontend and Backend services, launching them inside the Fargate cluster. Create CloudWatch Alarms and associate SNS email alerts.
+- **Week 4:** Set up the Customer Managed KMS Key, configure IAM policies, and run the RDS Snapshot export to S3. Run end-to-end load tests using PowerShell and conduct resource cleanup.
 
 ### 6. Budget Estimation
-You can find the budget estimation on the [AWS Pricing Calculator](https://calculator.aws/#/estimate?id=621f38b12a1ef026842ba2ddfe46ff936ed4ab01).  
-Or you can download the [Budget Estimation File](../attachments/budget_estimation.pdf).
+Estimated infrastructure costs for running the environment for 1 month:
 
-### Infrastructure Costs
-- AWS Services:
-    - AWS Lambda: $0.00/month (1,000 requests, 512 MB storage).
-    - S3 Standard: $0.15/month (6 GB, 2,100 requests, 1 GB scanned).
-    - Data Transfer: $0.02/month (1 GB inbound, 1 GB outbound).
-    - AWS Amplify: $0.35/month (256 MB, 500 ms requests).
-    - Amazon API Gateway: $0.01/month (2,000 requests).
-    - AWS Glue ETL Jobs: $0.02/month (2 DPUs).
-    - AWS Glue Crawlers: $0.07/month (1 crawler).
-    - MQTT (IoT Core): $0.08/month (5 devices, 45,000 messages).
+#### Infrastructure Costs
+- **VPC NAT Gateway:** ~$32.40/month ($0.045/hour in 1 AZ).
+- **Application Load Balancer:** ~$16.20/month ($0.0225/hour).
+- **Amazon RDS (db.t3.micro Multi-AZ PostgreSQL):** ~$26.28/month (db.t3.micro instance with 20GB gp3 storage).
+- **AWS ECS Fargate Tasks (vCPU & RAM):** ~$21.00/month (Backend task 0.5 vCPU/1GB RAM and Frontend task 0.25 vCPU/0.5GB RAM running continuously).
+- **AWS KMS Key:** $1.00/month.
+- **Amazon S3 & CloudWatch Logs:** ~$3.00/month (log storage and compressed snapshot size).
+- **Amazon SNS:** $0.00/month (within Free Tier limits).
 
-Total: $0.7/month, $8.40/12 months
-
-- Hardware: $265 one-time (Raspberry Pi 5 and sensors).
+**Total Estimated Cost:** ~$100.00/month (~$1,200.00/year).
 
 ### 7. Risk Assessment
 #### Risk Matrix
-- Network Outages: Medium impact, medium probability.
-- Sensor Failures: High impact, low probability.
-- Cost Overruns: Medium impact, low probability.
+- **Request Overload (Flash Sales):** High impact, medium probability.
+- **Database Connection Failure:** Critical impact, low probability.
+- **Access Credentials Leak:** Critical impact, low probability.
 
 #### Mitigation Strategies
-- Network: Local storage on Raspberry Pi with Docker.
-- Sensors: Regular checks and spares.
-- Cost: AWS budget alerts and optimization.
-
-#### Contingency Plans
-- Revert to manual methods if AWS fails.
-- Use CloudFormation for cost-related rollbacks.
+- **Request Overload:** CloudWatch Alarm alerts administrators via SNS email, allowing them to manually or automatically scale Fargate task replicas.
+- **Database Failure:** RDS is deployed as Multi-AZ, allowing automatic failover to a standby node if the primary database crashes.
+- **Access Credentials Leak:** Enforce strict IAM policies and use KMS key policies that only allow the RDS export engine to decrypt data for S3 transport.
 
 ### 8. Expected Outcomes
-#### Technical Improvements: 
-Real-time data and analytics replace manual processes.  
-Scalable to 10-15 stations.
+#### Technical Improvements
+- **Comprehensive Network Security:** Completely removes public interfaces from database and backend servers, isolating them using strict Security Groups.
+- **Centralized Logs & Metrics:** All microservices consolidate logs to CloudWatch Log Streams, providing a centralized dashboard for performance monitoring.
+- **Resilient Backups:** Compressed snapshots are encrypted and securely exported to S3, assuring reliable disaster recovery.
+
 #### Long-term Value
-1-year data foundation for AI research.  
-Reusable for future projects.
+Establishes a solid cloud architecture template to deploy future microservices. Enables easy transition to Infrastructure as Code (IaC) using Terraform or CloudFormation for automatic environment replication.

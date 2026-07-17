@@ -10,24 +10,24 @@ pre: " <b> 5. </b> "
 ⚠️ **Lưu ý:** Các thông tin dưới đây chỉ nhằm mục đích tham khảo, vui lòng **không sao chép nguyên văn** cho bài báo cáo của bạn kể cả warning này.
 {{% /notice %}}
 
-
-# Đảm bảo truy cập Hybrid an toàn đến S3 bằng cách sử dụng VPC endpoint
+# Triển khai Hệ thống Thanh toán hiệu năng cao trên AWS ECS Fargate với Private Subnets, RDS PostgreSQL và S3 Backup
 
 #### Tổng quan
 
-**AWS PrivateLink** cung cấp kết nối riêng tư đến các dịch vụ aws từ VPCs hoặc trung tâm dữ liệu (on-premise) mà không làm lộ lưu lượng truy cập ra ngoài public internet.
+Trong workshop này, chúng ta sẽ cùng nhau tự tay xây dựng và triển khai một hệ thống hạ tầng đám mây hoàn chỉnh, bảo mật và chịu tải cao trên AWS cho một ứng dụng **Payment Gateway Microservices**.
 
-Trong bài lab này, chúng ta sẽ học cách tạo, cấu hình, và kiểm tra VPC endpoints để cho phép workload của bạn tiếp cận các dịch vụ AWS mà không cần đi qua Internet công cộng.
+Hệ thống sẽ được thiết kế theo các tiêu chuẩn bảo mật doanh nghiệp bao gồm phân lập **Public/Private Subnets**, sử dụng **Application Load Balancer (ALB)** để nhận và route traffic, chạy các **microservices backend** gộp kèm **Redis sidecar** trên **AWS ECS Fargate**, kết nối với cơ sở dữ liệu **Amazon RDS PostgreSQL** chạy nội bộ và thiết lập cơ chế **S3 Backup & Recovery** qua tính năng **Snapshot Export** kết hợp với **KMS Key**.
 
-Chúng ta sẽ tạo hai loại endpoints để truy cập đến Amazon S3: gateway vpc endpoint và interface vpc endpoint. Hai loại vpc endpoints này mang đến nhiều lợi ích tùy thuộc vào việc bạn truy cập đến S3 từ môi trường cloud hay từ trung tâm dữ liệu (on-premise).
-+ **Gateway** - Tạo gateway endpoint để gửi lưu lượng đến Amazon S3 hoặc DynamoDB using private IP addresses. Bạn điều hướng lưu lượng từ VPC của bạn đến gateway endpoint bằng các bảng định tuyến (route tables)
-+ **Interface** - Tạo interface endpoint để gửi lưu lượng đến các dịch vụ điểm cuối (endpoints) sử dụng Network Load Balancer để phân phối lưu lượng. Lưu lượng dành cho dịch vụ điểm cuối được resolved bằng DNS.
-
-#### Nội dung
+#### Nội dung thực hành
 
 1. [Tổng quan về workshop](5.1-Workshop-overview/)
-2. [Chuẩn bị](5.2-Prerequiste/)
-3. [Truy cập đến S3 từ VPC](5.3-S3-vpc/)
-4. [Truy cập đến S3 từ TTDL On-premises](5.4-S3-onprem/)
-5. [VPC Endpoint Policies (làm thêm)](5.5-Policy/)
-6. [Dọn dẹp tài nguyên](5.6-Cleanup/)
+2. [Chuẩn bị môi trường & AWS ECR](5.2-Prerequiste/)
+3. [Thiết lập mạng lưới VPC](5.3-VPC-Networking/)
+4. [Thiết lập Security Groups](5.4-Security-Groups/)
+5. [Khởi tạo RDS PostgreSQL trong mạng Private](5.5-RDS-Database/)
+6. [Cấu hình Application Load Balancer](5.6-Load-Balancer/)
+7. [Triển khai ECS Fargate](5.7-ECS-Fargate/)
+8. [Cấu hình CloudWatch Alarm & SNS Notification](5.8-CloudWatch-Alarm/)
+9. [Tích hợp S3 Backup & Recovery](5.9-S3-Backup/)
+10. [Kiểm tra & Nghiệm thu](5.10-Verification/)
+11. [Dọn dẹp tài nguyên](5.11-Cleanup/)

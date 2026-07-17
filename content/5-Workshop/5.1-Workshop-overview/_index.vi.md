@@ -6,14 +6,23 @@ chapter : false
 pre : " <b> 5.1. </b> "
 ---
 
-#### Giới thiệu về VPC Endpoint
+#### Giới thiệu về Hệ thống Payment Gateway Microservices
 
-+ Điểm cuối VPC (endpoint) là thiết bị ảo. Chúng là các thành phần VPC có thể mở rộng theo chiều ngang, dự phòng và có tính sẵn sàng cao. Chúng cho phép giao tiếp giữa tài nguyên điện toán của bạn và dịch vụ AWS mà không gây ra rủi ro về tính sẵn sàng.
-+ Tài nguyên điện toán đang chạy trong VPC có thể truy cập Amazon S3 bằng cách sử dụng điểm cuối Gateway. Interface Endpoint  PrivateLink có thể được sử dụng bởi tài nguyên chạy trong VPC hoặc tại TTDL.
+Hệ thống Cổng thanh toán (Payment Gateway) được triển khai trong bài thực hành này là một ứng dụng microservices được xây dựng bằng **Spring Boot** (cho Backend) và **React Vite** (cho Frontend). Dự án bao gồm các dịch vụ thành phần:
+- **API Gateway (Port 8080):** Tiếp nhận toàn bộ các request từ bên ngoài và route đến các dịch vụ nội bộ tương ứng.
+- **Account Service (Port 8082):** Quản lý tài khoản khách hàng, đăng ký và số dư (Balance).
+- **Payment Service (Port 8083):** Thực hiện xử lý giao dịch thanh toán và nạp/rút tiền tích hợp cơ chế chống trùng lặp (Idempotency) sử dụng **Redis Distributed Lock**.
+- **Transaction Service (Port 8084):** Quản lý lịch sử giao dịch và đối soát tài khoản (Ledger).
+- **Redis Cache/Lock:** Lưu trữ các lock phân tán chống trùng lắp giao dịch.
 
-#### Tổng quan về workshop
-Trong workshop này, bạn sẽ sử dụng hai VPC.
-+ **"VPC Cloud"** dành cho các tài nguyên cloud như Gateway endpoint và EC2 instance để kiểm tra.
-+ **"VPC On-Prem"** mô phỏng môi trường truyền thống như nhà máy hoặc trung tâm dữ liệu của công ty. Một EC2 Instance chạy phần mềm StrongSwan VPN đã được triển khai trong "VPC On-prem" và được cấu hình tự động để thiết lập đường hầm VPN Site-to-Site với AWS Transit Gateway. VPN này mô phỏng kết nối từ một vị trí tại TTDL (on-prem) với AWS cloud. Để giảm thiểu chi phí, chỉ một phiên bản VPN được cung cấp để hỗ trợ workshop này. Khi lập kế hoạch kết nối VPN cho production workloads của bạn, AWS khuyên bạn nên sử dụng nhiều thiết bị VPN để có tính sẵn sàng cao.
+#### Sơ đồ Kiến trúc Mạng bảo mật (Private Subnet)
 
-![overview](/images/5-Workshop/5.1-Workshop-overview/diagram1.png)
+Mô hình triển khai trên AWS áp dụng cơ chế bảo mật cô lập:
+
+![Kiến trúc mạng](/images/5-Workshop/5.1-Workshop-overview/architecture_diagram.png)
+
+#### Các điểm nổi bật của kiến trúc:
+1. **Network Isolation:** Application Load Balancer (ALB) đón nhận traffic công cộng tại tầng **Public Subnet**, trong khi đó các ECS Tasks và Cơ sở dữ liệu RDS PostgreSQL chạy hoàn toàn trong mạng **Private Subnet** nhằm ngăn ngừa nguy cơ bị quét cổng hoặc tấn công trực tiếp.
+2. **NAT Gateway:** Các ECS Tasks đặt trong Private Subnet không có Public IP nhưng vẫn kết nối Outbound ra Internet thông qua NAT Gateway để kéo ảnh Docker và đẩy CloudWatch Logs.
+3. **Monolithic Task:** 4 microservices backend được gộp chung trong một Docker Image chạy đồng thời với Redis container (sidecar) trong cùng một ECS Task giúp tối ưu hóa chi phí vận hành Fargate.
+4. **S3 Backup:** Sao lưu RDS PostgreSQL an toàn thông qua tính năng RDS Snapshot Export mã hóa bằng KMS Key sang Amazon S3.

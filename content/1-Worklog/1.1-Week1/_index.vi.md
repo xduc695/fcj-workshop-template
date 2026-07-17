@@ -14,7 +14,6 @@ pre: " <b> 1.1. </b> "
 * Tìm hiểu và thực hành thiết lập AWS Budget để quản lý chi phí trên tài khoản AWS.
 * Tìm hiểu về AWS Support và quy trình khởi tạo yêu cầu hỗ trợ (Support Case).
 * Tìm hiểu và thực hành quản trị quyền truy cập bằng IAM User, Group và Role.
-* Tìm hiểu và thực hành triển khai cơ bản hệ sinh thái Kiro (IDE, CLI) theo quy trình Spec-Driven Development
 * Tìm hiểu AWS Well-Architected Framework và thử nghiệm đánh giá rủi ro bảo mật với công cụ Well-Architected Tool
 ### Các công việc cần triển khai trong tuần này:
 | Ngày | Công việc                                                                                                                                                                                   | Ngày bắt đầu | Ngày hoàn thành | Nguồn tài liệu                            |
@@ -23,9 +22,8 @@ pre: " <b> 1.1. </b> "
 | 2   | - Tìm hiểu AWS và các loại dịch vụ cơ bản<br>&emsp; + Compute (EC2, Lambda) <br>&emsp; + Storage (S3, EBS) <br>&emsp; + Networking (VPC, Security Group) <br>&emsp; + Database (RDS, DynamoDB) <br>&emsp; + ... <br>                                            | 18/04/2026   | 18/04/2026      | <https://cloudjourney.awsstudygroup.com/>|
 | 3   | - Tạo tài khoản AWS Free Tier 2025 <br> - Hoàn thành 5 nhiệm vụ để nhận đủ credit <br> - Nắm bắt lộ trình học tập, các dịch vụ nguy hiểm và các phương pháp kiểm soát chi phí an toàn trên AWS <br> - Làm quen giao diện AWS Console và các nhóm dịch vụ cốt lõi<br> - **Thực hành:** <br>&emsp; + Cấu hình và sử dụng AWS CLI| 19/04/2026   | 19/04/2026      | <https://000001.awsstudygroup.com/> |
 | 4   | - Tìm hiểu về AWS Budget để cấu hình quản lý chi phí<br> - **Thực hành:** <br>&emsp; + Cấu hình nhanh với Budget template<br>&emsp; + Cấu hình Cost Budget<br>&emsp; + Cấu hình Usage Budget <br>&emsp; + Cấu hình RI Budget <br>&emsp; + Cấu hình Savings Plans Budget <br> - Tìm hiểu về AWS Support và quy trình khởi tạo yêu cầu hỗ trợ (Support Case)<br>&emsp; + Các loại cases hỗ trợ<br>&emsp; + Cách thay đổi Support Plans<br>&emsp; + Cách Khởi tạo cases hỗ trợ<br>&emsp; + Nắm bắt việc lựa chọn severity level         | 20/04/2026   | 20/04/2026      | <https://000007.awsstudygroup.com/><br><https://000009.awsstudygroup.com/> |
-| 5   | - Tìm hiểu về IAM User, Group, Policies và Role<br> - **Thực hành:** <br>&emsp; + Khởi tạo Admin Group và Admin User<br>&emsp; + Thiết lập Admin Role và OperatorUser<br>&emsp; +Thực hành cấu hình và thực hiện Switch Role<br> - Tìm hiểu về Kiro SDD, cài đặt và đăng nhập vào Kiro IDE<br>&emsp; + Làm quen với giao diện Kiro IDE<br>&emsp; + Nắm bắt về Spec, Steering, Agent Hooks                                                                            | 21/04/2026   | 21/04/2026      | <https://000002.awsstudygroup.com/><br><https://000180.awsstudygroup.com/> |
-| 6   |  - Triển khai sử dụng kiro SSD<br> - Tìm hiểu về Kiro CLI và các tính năng cơ bản<br> - **Thực hành:**<br>&emsp; + Tạo project<br>&emsp; + Tạo specs files<br>&emsp; + Tạo steering files<br>&emsp; + Thực thi task và chỉnh sửa<br>&emsp; + Tiến hành cài đặt Kiro CLI<br>&emsp; + Thực hiện một số lệnh cơ bản  trên Kiro CLI để quản lý tài nguyên<br> - Tìm hiểu về AWS Well-Architected Framework<br> - **Thực hành:**<br>&emsp; + Triển khai thử nghiệm đánh giá rủi ro bảo mật với công cụ Well-Architected Tool                                                          | 22/04/2026   | 22/04/2026      | <https://000180.awsstudygroup.com/> |
-
+| 5   | - Tìm hiểu về IAM User, Group, Policies và Role<br> - **Thực hành:** <br>&emsp; + Khởi tạo Admin Group và Admin User<br>&emsp; + Thiết lập Admin Role và OperatorUser<br>&emsp; +Thực hành cấu hình và thực hiện Switch Role                                                                          | 21/04/2026   | 21/04/2026      | <https://000002.awsstudygroup.com/>|
+| 6   | - Tìm hiểu về AWS Well-Architected Framework<br> - **Thực hành:**<br>&emsp; + Triển khai thử nghiệm đánh giá rủi ro bảo mật với công cụ Well-Architected Tool                                                                          | 22/04/2026   | 22/04/2026      | <https://cloudjourney.awsstudygroup.com/>|
 ### Kết quả đạt được tuần 1:
 
 * Làm quen, thiết lập kênh liên lạc và trao đổi kinh nghiệm cùng các thành viên, chuyên gia trong dự án First Cloud AI Journey.
@@ -81,13 +79,6 @@ pre: " <b> 1.1. </b> "
   * Thiết lập AdminRole và Trust Relationship giúp cấp quyền truy cập tạm thời, loại bỏ rủi ro lộ lọt thông tin xác thực dài hạn.
   * Thành thạo quy trình Switch Role cho OperatorUser, đảm bảo chỉ sử dụng quyền quản trị khi thực sự cần thiết.
    ![Your profile picture](/images/6.png)
-* Làm quen với Kiro IDE và Kiro CLI:
-  * Hiểu rõ vai trò của Spec, Steering và Agent Hooks trong việc tạo ra "nguồn chân lý duy nhất", giúp AI triển khai mã nguồn chính xác theo yêu cầu nghiệp vụ.
-  * Hoàn thiện bộ hồ sơ Specs & Steering, thực thi thành công các Tasks để AI tự động khởi tạo dự án Todo List (HTML/CSS/JS) nhất quán với bản thiết kế.
-     ![Your profile picture](/images/7.png)
-     ![Your profile picture](/images/9.png)
-  * Cài đặt và sử dụng thành thạo các lệnh cơ bản trên Kiro CL để quản lý tài nguyên và tương tác trực tiếp với AI Agent.
-     ![Your profile picture](/images/8.png)
 * Triển khai đánh giá với AWS Well-Architected Tool
   * Thực hiện đánh giá thử nghiệm dựa trên trụ cột bảo mật, giúp nhận diện trực quan các lỗ hổng hệ thống thông qua giao diện quản trị
   * Xác định cụ thể 4 rủi ro cao (High risk) và 1 rủi ro trung bình (Medium risk) sau khi trả lời 5/11 câu hỏi kiểm tra

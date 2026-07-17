@@ -5,104 +5,137 @@ weight: 2
 chapter: false
 pre: " <b> 2. </b> "
 ---
-{{% notice warning %}}
-⚠️ **Lưu ý:** Các thông tin dưới đây chỉ nhằm mục đích tham khảo, vui lòng **không sao chép nguyên văn** cho bài báo cáo của bạn kể cả warning này.
-{{% /notice %}}
-
-Tại phần này, bạn cần tóm tắt các nội dung trong workshop mà bạn **dự tính** sẽ làm.
-
-# IoT Weather Platform for Lab Research  
-## Giải pháp AWS Serverless hợp nhất cho giám sát thời tiết thời gian thực  
+# High-Concurrency Payment Gateway Infrastructure on AWS  
+## Hạ tầng Cổng thanh toán Hiệu năng cao bảo mật 3 lớp với ECS Fargate và S3 Backup  
 
 ### 1. Tóm tắt điều hành  
-IoT Weather Platform được thiết kế dành cho nhóm *ITea Lab* tại TP. Hồ Chí Minh nhằm nâng cao khả năng thu thập và phân tích dữ liệu thời tiết. Nền tảng hỗ trợ tối đa 5 trạm thời tiết, có khả năng mở rộng lên 10–15 trạm, sử dụng thiết bị biên Raspberry Pi kết hợp cảm biến ESP32 để truyền dữ liệu qua MQTT. Nền tảng tận dụng các dịch vụ AWS Serverless để cung cấp giám sát thời gian thực, phân tích dự đoán và tiết kiệm chi phí, với quyền truy cập giới hạn cho 5 thành viên phòng lab thông qua Amazon Cognito.  
+Hệ thống **High-Concurrency Payment Gateway** được thiết kế nhằm cung cấp một hạ tầng cổng thanh toán trực tuyến bảo mật, chịu tải tốt và có khả năng phục hồi thảm họa cao trên nền tảng AWS. Dự án này phục vụ việc chuyển đổi mô hình ứng dụng Payment Gateway Microservices từ môi trường phát triển cục bộ lên hạ tầng đám mây đạt tiêu chuẩn Production-ready. Hạ tầng áp dụng mô hình phân tách mạng **VPC 3-tier (Public/Private Subnets)** kết hợp giữa **Application Load Balancer (ALB)**, **AWS ECS Fargate** cho serverless containers (Frontend Nginx, Spring Boot Backend và Redis sidecar), cơ sở dữ liệu **Amazon RDS PostgreSQL** cô lập, hệ thống giám sát CloudWatch Alarm cùng cơ chế tự động hóa **S3 Backup & Recovery** sử dụng khóa KMS tùy chỉnh.
 
 ### 2. Tuyên bố vấn đề  
 *Vấn đề hiện tại*  
-Các trạm thời tiết hiện tại yêu cầu thu thập dữ liệu thủ công, khó quản lý khi có nhiều trạm. Không có hệ thống tập trung cho dữ liệu hoặc phân tích thời gian thực, và các nền tảng bên thứ ba thường tốn kém và quá phức tạp.  
+Các hệ thống cổng thanh toán truyền thống chạy trên on-premises hoặc máy ảo đơn lẻ thường đối mặt với các thách thức:
+- **Rủi ro bảo mật:** Database và API chứa thông tin tài chính nhạy cảm bị phơi bày trực tiếp ra Internet công cộng (Public IP).
+- **Khả năng chịu tải kém:** Khó mở rộng tự động (Auto Scaling) khi lượng requests thanh toán tăng đột biến (flash sales), dẫn đến nghẽn mạng và treo hệ thống.
+- **Thiếu giám sát thời gian thực:** Không có hệ thống cảnh báo tức thời khi hệ thống quá tải hoặc lỗi container.
+- **Rủi ro mất mát dữ liệu:** Quy trình backup database thực hiện thủ công, lưu trữ phân tán và không được mã hóa bảo vệ.
 
 *Giải pháp*  
-Nền tảng sử dụng AWS IoT Core để tiếp nhận dữ liệu MQTT, AWS Lambda và API Gateway để xử lý, Amazon S3 để lưu trữ (bao gồm data lake), và AWS Glue Crawlers cùng các tác vụ ETL để trích xuất, chuyển đổi, tải dữ liệu từ S3 data lake sang một S3 bucket khác để phân tích. AWS Amplify với Next.js cung cấp giao diện web, và Amazon Cognito đảm bảo quyền truy cập an toàn. Tương tự như Thingsboard và CoreIoT, người dùng có thể đăng ký thiết bị mới và quản lý kết nối, nhưng nền tảng này hoạt động ở quy mô nhỏ hơn và phục vụ mục đích sử dụng nội bộ. Các tính năng chính bao gồm bảng điều khiển thời gian thực, phân tích xu hướng và chi phí vận hành thấp.  
+Hạ tầng mới thiết lập trên AWS giải quyết triệt để các vấn đề trên:
+- **Network Isolation:** Toàn bộ container Backend và RDS Database chạy cô lập 100% trong **Private Subnets**, giao tiếp ra ngoài Internet một chiều qua **NAT Gateway**.
+- **Serverless Compute:** Sử dụng **AWS ECS Fargate** để quản trị container tự động, giảm thiểu gánh nặng quản lý máy ảo EC2 OS.
+- **High Availability & Routing:** Sử dụng **Application Load Balancer (ALB)** đặt tại **Public Subnets** để tiếp nhận traffic HTTP (port 80) từ Internet, tự động chuyển hướng các API requests (`/api/*`) về API Gateway Backend (port 8080) và các requests tĩnh về Frontend Nginx.
+- **Real-time Alerting:** Cấu hình **CloudWatch Alarm** kết hợp **Amazon SNS** gửi Email notification trực tiếp tới quản trị viên khi phát hiện lượng traffic vượt ngưỡng (RequestCount > 100 requests/phút).
+- **Secure Backup:** Sử dụng **Customer Managed Key (KMS Symmetric)** để mã hóa các bản Snapshot cơ sở dữ liệu RDS và tự động xuất (Export) sang **Amazon S3 Bucket** làm data lake lưu trữ lâu dài.
+- **EC2 Bastion Host:** Dựng máy ảo Jumpbox tạm thời ở Public Subnet chỉ khi cần nạp database schema ban đầu, sau đó terminate ngay để tối ưu chi phí và bảo mật.
 
 *Lợi ích và hoàn vốn đầu tư (ROI)*  
-Giải pháp tạo nền tảng cơ bản để các thành viên phòng lab phát triển một nền tảng IoT lớn hơn, đồng thời cung cấp nguồn dữ liệu cho những người nghiên cứu AI phục vụ huấn luyện mô hình hoặc phân tích. Nền tảng giảm bớt báo cáo thủ công cho từng trạm thông qua hệ thống tập trung, đơn giản hóa quản lý và bảo trì, đồng thời cải thiện độ tin cậy dữ liệu. Chi phí hàng tháng ước tính 0,66 USD (theo AWS Pricing Calculator), tổng cộng 7,92 USD cho 12 tháng. Tất cả thiết bị IoT đã được trang bị từ hệ thống trạm thời tiết hiện tại, không phát sinh chi phí phát triển thêm. Thời gian hoàn vốn 6–12 tháng nhờ tiết kiệm đáng kể thời gian thao tác thủ công.  
+- **An toàn bảo mật tối đa:** Đạt tiêu chuẩn an toàn dữ liệu tài chính nhờ cô lập mạng lưới và mã hóa KMS.
+- **Giảm thời gian chết (Downtime):** Tự động phát hiện lỗi qua Target Group Health Check của ALB để tự động phục hồi (Recreate) container bị lỗi.
+- **Hiệu quả chi phí:** Nhờ tính năng serverless của Fargate và cơ chế tắt/xóa tài nguyên thừa, chi phí vận hành ước tính dao động khoảng 90 - 110 USD/tháng cho môi trường test tải trọng lớn, mang lại hiệu quả ROI vượt trội so với việc tự xây dựng hạ tầng vật lý tại on-premises.
 
 ### 3. Kiến trúc giải pháp  
-Nền tảng áp dụng kiến trúc AWS Serverless để quản lý dữ liệu từ 5 trạm dựa trên Raspberry Pi, có thể mở rộng lên 15 trạm. Dữ liệu được tiếp nhận qua AWS IoT Core, lưu trữ trong S3 data lake và xử lý bởi AWS Glue Crawlers và ETL jobs để chuyển đổi và tải vào một S3 bucket khác cho mục đích phân tích. Lambda và API Gateway xử lý bổ sung, trong khi Amplify với Next.js cung cấp bảng điều khiển được bảo mật bởi Cognito.  
+Hạ tầng Payment Gateway áp dụng kiến trúc mạng 3 lớp (Public, Private App, Private DB) chạy hoàn toàn trên AWS.
 
-![IoT Weather Station Architecture](/images/2-Proposal/edge_architecture.jpeg)
-
-![IoT Weather Platform Architecture](/images/2-Proposal/platform_architecture.jpeg)
+```mermaid
+graph TD
+    User([Trình duyệt Người dùng]) -->|Cổng HTTP 80| ALB[Application Load Balancer]
+    
+    subgraph VPC [Hạ tầng mạng AWS VPC 10.0.0.0/16]
+        subgraph PublicSubnets [Mạng công cộng - Public Subnets]
+            ALB
+            NGW[NAT Gateway]
+            EC2_B[EC2 Bastion Host <br> Cổng kết nối quản trị]
+        end
+        
+        subgraph PrivateSubnets [Mạng nội bộ bảo mật - Private Subnets]
+            F_FE[ECS Task: Frontend Nginx]
+            
+            subgraph BackendTask [ECS Task: pg-backend]
+                C_JAVA[Container: backend gộp <br> gateway, account, <br> payment, transaction]
+                C_REDIS[Container: redis sidecar]
+            end
+            
+            RDS[(Amazon RDS PostgreSQL <br> Private Instance)]
+        end
+    end
+    
+    S3[(Amazon S3 <br> Backup Bucket)]
+    
+    ALB -->|Mặc định /| F_FE
+    ALB -->|Đường dẫn /api/*| C_JAVA
+    
+    C_JAVA -->|Mạng nội bộ localhost:6379| C_REDIS
+    C_JAVA -->|Đăng ký JDBC cổng 5432| RDS
+    
+    EC2_B -->|Cổng 5432 nạp database| RDS
+    
+    RDS -->|Export Snapshot| S3
+    
+    F_FE & C_JAVA & C_REDIS -->|Kéo Image & Gửi Log| NGW -->|Kết nối ra ngoài| Internet((Internet công cộng))
+    NGW -->|Ghi logs| CW[CloudWatch Log Group]
+    
+    ALB -->|Chỉ số RequestCount| CWA[CloudWatch Alarm] -->|Kích hoạt cảnh báo| SNS[SNS Alerts Topic] -->|Gửi Mail| Mail(Hòm thư Email cá nhân)
+```
 
 *Dịch vụ AWS sử dụng*  
-- *AWS IoT Core*: Tiếp nhận dữ liệu MQTT từ 5 trạm, mở rộng lên 15.  
-- *AWS Lambda*: Xử lý dữ liệu và kích hoạt Glue jobs (2 hàm).  
-- *Amazon API Gateway*: Giao tiếp với ứng dụng web.  
-- *Amazon S3*: Lưu trữ dữ liệu thô (data lake) và dữ liệu đã xử lý (2 bucket).  
-- *AWS Glue*: Crawlers lập chỉ mục dữ liệu, ETL jobs chuyển đổi và tải dữ liệu.  
-- *AWS Amplify*: Lưu trữ giao diện web Next.js.  
-- *Amazon Cognito*: Quản lý quyền truy cập cho người dùng phòng lab.  
+- *Amazon VPC*: Quản lý hạ tầng mạng ảo gồm 4 Subnets, Route Tables, Internet Gateway và NAT Gateway.
+- *AWS ECS Fargate*: Dịch vụ container không máy chủ chạy ứng dụng Frontend và Backend.
+- *Amazon RDS (PostgreSQL)*: Cơ sở dữ liệu quan hệ được quản trị toàn phần chạy trong Private Subnets.
+- *Amazon S3*: Nơi lưu trữ các bản xuất Snapshot nén của database.
+- *AWS Key Management Service (KMS)*: Tạo Customer Managed Key để mã hóa snapshot xuất khẩu.
+- *Amazon CloudWatch*: Thu thập logs từ container (`/ecs/pg-logs`) và tạo cảnh báo hiệu năng `RequestCount`.
+- *Amazon SNS*: Gửi thông tin Email cảnh báo thời gian thực.
+- *Amazon EC2*: Sử dụng cho Bastion Host trung chuyển dữ liệu.
 
 *Thiết kế thành phần*  
-- *Thiết bị biên*: Raspberry Pi thu thập và lọc dữ liệu cảm biến, gửi tới IoT Core.  
-- *Tiếp nhận dữ liệu*: AWS IoT Core nhận tin nhắn MQTT từ thiết bị biên.  
-- *Lưu trữ dữ liệu*: Dữ liệu thô lưu trong S3 data lake; dữ liệu đã xử lý lưu ở một S3 bucket khác.  
-- *Xử lý dữ liệu*: AWS Glue Crawlers lập chỉ mục dữ liệu; ETL jobs chuyển đổi để phân tích.  
-- *Giao diện web*: AWS Amplify lưu trữ ứng dụng Next.js cho bảng điều khiển và phân tích thời gian thực.  
-- *Quản lý người dùng*: Amazon Cognito giới hạn 5 tài khoản hoạt động.  
+- **Frontend Task**: Container Nginx phục vụ giao diện NextGenPay tĩnh, nhận traffic chuyển tiếp từ ALB ở cổng 80.
+- **Backend Task**: Chạy mô hình Multi-Container gồm container Java/Spring Boot (gộp API Gateway, Account, Payment, Transaction Service) và container Redis sidecar làm cache tốc độ cao trên cùng mạng `localhost`.
+- **Database & Backup**: RDS PostgreSQL lưu trữ dữ liệu tài khoản và giao dịch, định kỳ chụp Snapshot thủ công/tự động và xuất sang S3 Bucket dưới dạng nén được mã hóa bởi KMS Key `pg-s3-export-key`.
 
 ### 4. Triển khai kỹ thuật  
 *Các giai đoạn triển khai*  
-Dự án gồm 2 phần — thiết lập trạm thời tiết biên và xây dựng nền tảng thời tiết — mỗi phần trải qua 4 giai đoạn:  
-1. *Nghiên cứu và vẽ kiến trúc*: Nghiên cứu Raspberry Pi với cảm biến ESP32 và thiết kế kiến trúc AWS Serverless (1 tháng trước kỳ thực tập).  
-2. *Tính toán chi phí và kiểm tra tính khả thi*: Sử dụng AWS Pricing Calculator để ước tính và điều chỉnh (Tháng 1).  
-3. *Điều chỉnh kiến trúc để tối ưu chi phí/giải pháp*: Tinh chỉnh (ví dụ tối ưu Lambda với Next.js) để đảm bảo hiệu quả (Tháng 2).  
-4. *Phát triển, kiểm thử, triển khai*: Lập trình Raspberry Pi, AWS services với CDK/SDK và ứng dụng Next.js, sau đó kiểm thử và đưa vào vận hành (Tháng 2–3).  
-
-*Yêu cầu kỹ thuật*  
-- *Trạm thời tiết biên*: Cảm biến (nhiệt độ, độ ẩm, lượng mưa, tốc độ gió), vi điều khiển ESP32, Raspberry Pi làm thiết bị biên. Raspberry Pi chạy Raspbian, sử dụng Docker để lọc dữ liệu và gửi 1 MB/ngày/trạm qua MQTT qua Wi-Fi.  
-- *Nền tảng thời tiết*: Kiến thức thực tế về AWS Amplify (lưu trữ Next.js), Lambda (giảm thiểu do Next.js xử lý), AWS Glue (ETL), S3 (2 bucket), IoT Core (gateway và rules), và Cognito (5 người dùng). Sử dụng AWS CDK/SDK để lập trình (ví dụ IoT Core rules tới S3). Next.js giúp giảm tải Lambda cho ứng dụng web fullstack.  
+Dự án được xây dựng và triển khai qua 4 giai đoạn chính:
+1. *Nghiên cứu ứng dụng & Thiết kế hạ tầng*: Đóng gói mã nguồn Backend Gradle và Frontend Next.js/HTML thành các Docker Images, thiết kế sơ đồ mạng VPC 3 lớp trên AWS.
+2. *Thiết lập mạng lưới & Cơ sở dữ liệu*: Khởi dựng VPC, Route Tables, NAT Gateway, Security Groups và Database RDS PostgreSQL Private. Sử dụng Bastion Host nạp schema SQL.
+3. *Triển khai Container & Định tuyến ALB*: Thiết lập Target Groups, ALB Listener Rules, đăng ký Task Definitions JSON và chạy ECS Services (Frontend & Backend).
+4. *Cấu hình Giám sát & Backup S3*: Thiết lập CloudWatch Alarm cho chỉ số RequestCount, liên kết SNS Topic gửi Mail cảnh báo. Tạo KMS Key, cấu hình IAM Policy/Role và tiến hành export Snapshot cơ sở dữ liệu sang S3 an toàn.
 
 ### 5. Lộ trình & Mốc triển khai  
-- *Trước thực tập (Tháng 0)*: 1 tháng lên kế hoạch và đánh giá trạm cũ.  
-- *Thực tập (Tháng 1–3)*:  
-    - Tháng 1: Học AWS và nâng cấp phần cứng.  
-    - Tháng 2: Thiết kế và điều chỉnh kiến trúc.  
-    - Tháng 3: Triển khai, kiểm thử, đưa vào sử dụng.  
-- *Sau triển khai*: Nghiên cứu thêm trong vòng 1 năm.  
+- *Tuần 1*: Đóng gói mã nguồn dự án thành Docker Images, đẩy lên AWS ECR Private Repositories. Thiết lập VPC mạng 3 lớp, NAT Gateway và Security Groups.
+- *Tuần 2*: Khởi tạo RDS PostgreSQL trong mạng Private. Dựng Bastion Host để kết nối và chạy script SQL khởi tạo. Tạo Target Groups và cấu hình ALB Listener Rules định tuyến phân tách `/api/*`.
+- *Tuần 3*: Đăng ký ECS Task Definitions cho Frontend và Backend, khởi chạy ECS Services. Tạo hệ thống cảnh báo CloudWatch Alarm & SNS Notification.
+- *Tuần 4*: Thiết lập KMS Customer Managed Key, gán IAM permissions và chạy quy trình xuất RDS Snapshot sang S3 Bucket. Kiểm thử toàn bộ hệ thống bằng script test tải trọng và dọn dẹp tài nguyên.
 
 ### 6. Ước tính ngân sách  
-Có thể xem chi phí trên [AWS Pricing Calculator](https://calculator.aws/#/estimate?id=621f38b12a1ef026842ba2ddfe46ff936ed4ab01)  
-Hoặc tải [tệp ước tính ngân sách](../attachments/budget_estimation.pdf).  
+Ước tính chi phí vận hành cho môi trường thử nghiệm cổng thanh toán trong 1 tháng (dựa trên AWS Pricing Calculator):
 
 *Chi phí hạ tầng*  
-- AWS Lambda: 0,00 USD/tháng (1.000 request, 512 MB lưu trữ).  
-- S3 Standard: 0,15 USD/tháng (6 GB, 2.100 request, 1 GB quét).  
-- Truyền dữ liệu: 0,02 USD/tháng (1 GB vào, 1 GB ra).  
-- AWS Amplify: 0,35 USD/tháng (256 MB, request 500 ms).  
-- Amazon API Gateway: 0,01 USD/tháng (2.000 request).  
-- AWS Glue ETL Jobs: 0,02 USD/tháng (2 DPU).  
-- AWS Glue Crawlers: 0,07 USD/tháng (1 crawler).  
-- MQTT (IoT Core): 0,08 USD/tháng (5 thiết bị, 45.000 tin nhắn).  
+- **VPC NAT Gateway:** ~32,40 USD/tháng (0,045 USD/giờ cho 1 AZ).
+- **Application Load Balancer (ALB):** ~16,20 USD/tháng (0,0225 USD/giờ).
+- **Amazon RDS (db.t3.micro Multi-AZ PostgreSQL):** ~26,28 USD/tháng (lớp db.t3.micro kèm ổ SSD gp3 20GB).
+- **AWS ECS Fargate Tasks (CPU & RAM):** ~21,00 USD/tháng (Backend Task 0.5 vCPU/1GB RAM và Frontend Task 0.25 vCPU/0.5GB RAM chạy liên tục).
+- **AWS KMS Key:** 1,00 USD/tháng.
+- **Amazon S3 & CloudWatch Logs:** ~3,00 USD/tháng (lưu trữ logs và file nén backup).
+- **Amazon SNS:** 0,00 USD/tháng (trong hạn mức Free Tier).
 
-*Tổng*: 0,7 USD/tháng, 8,40 USD/12 tháng  
-- *Phần cứng*: 265 USD một lần (Raspberry Pi 5 và cảm biến).  
+*Tổng chi phí ước tính:* ~100 USD/tháng (~1.200 USD/năm).
 
 ### 7. Đánh giá rủi ro  
 *Ma trận rủi ro*  
-- Mất mạng: Ảnh hưởng trung bình, xác suất trung bình.  
-- Hỏng cảm biến: Ảnh hưởng cao, xác suất thấp.  
-- Vượt ngân sách: Ảnh hưởng trung bình, xác suất thấp.  
+- **Quá tải requests (DDoS/Flash Sale):** Ảnh hưởng cao, xác suất trung bình.
+- **Lỗi kết nối cơ sở dữ liệu (Database Down):** Ảnh hưởng rất cao, xác suất thấp.
+- **Lọt lộ thông tin credentials/KMS Key:** Ảnh hưởng rất cao, xác suất thấp.
 
 *Chiến lược giảm thiểu*  
-- Mạng: Lưu trữ cục bộ trên Raspberry Pi với Docker.  
-- Cảm biến: Kiểm tra định kỳ, dự phòng linh kiện.  
-- Chi phí: Cảnh báo ngân sách AWS, tối ưu dịch vụ.  
-
-*Kế hoạch dự phòng*  
-- Quay lại thu thập thủ công nếu AWS gặp sự cố.  
-- Sử dụng CloudFormation để khôi phục cấu hình liên quan đến chi phí.  
+- **Quá tải requests:** Sử dụng CloudWatch Alarm cảnh báo tức thời qua mail để quản trị viên kịp thời tăng số lượng Task (Auto Scaling) hoặc giới hạn băng thông.
+- **Lỗi Database:** Khởi chạy RDS dưới dạng Multi-AZ để tự động chuyển vùng dự phòng (Failover) khi xảy ra sự cố phần cứng.
+- **Lọt lộ dữ liệu:** Giới hạn IAM Roles nghiêm ngặt, sử dụng Custom KMS Key Policy để chỉ cho phép RDS Service Assume Role xuất dữ liệu.
 
 ### 8. Kết quả kỳ vọng  
-*Cải tiến kỹ thuật*: Dữ liệu và phân tích thời gian thực thay thế quy trình thủ công. Có thể mở rộng tới 10–15 trạm.  
-*Giá trị dài hạn*: Nền tảng dữ liệu 1 năm cho nghiên cứu AI, có thể tái sử dụng cho các dự án tương lai.
+*Cải tiến kỹ thuật*  
+- **Bảo mật mạng toàn diện:** Loại bỏ hoàn toàn IP công cộng cho Backend và DB, bảo vệ bằng các lớp Security Group chặt chẽ.
+- **Giám sát trực quan:** Toàn bộ hoạt động của microservices được tập trung hóa logs và theo dõi thông tin tài nguyên theo thời gian thực.
+- **Sao lưu tin cậy:** Có tệp tin snapshot lưu trữ an toàn trên S3, bảo vệ bằng mã hóa chuẩn doanh nghiệp.
+
+*Giá trị dài hạn*  
+Nền tảng hạ tầng DevOps vững chắc cho phép mở rộng quy mô dự án lên nhiều microservices khác, dễ dàng chuyển đổi sang sử dụng Terraform/CloudFormation (IaC) để tự động hóa toàn bộ quy trình triển khai trong tương lai.
