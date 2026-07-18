@@ -5,12 +5,6 @@ weight: 2
 chapter: false
 pre: " <b> 2. </b> "
 ---
-{{% notice warning %}}
-⚠️ **Note:** The information below is for reference purposes only. Please **do not copy verbatim** for your report, including this warning.
-{{% /notice %}}
-
-In this section, you need to summarize the contents of the workshop that you **plan** to conduct.
-
 # High-Concurrency Payment Gateway Infrastructure on AWS
 ## 3-Tier Secure Networking with ECS Fargate and S3 Backup
 
@@ -37,7 +31,7 @@ This AWS-based architecture resolves these challenges:
 #### Benefits and Return on Investment
 - **Compliance and Security:** Isolation of network resources and KMS data encryption align the platform with financial data security principles.
 - **Self-Healing Infrastructure:** Load balancer health checks monitor Fargate tasks, automatically recreating unhealthy tasks to maintain uptime.
-- **Cost Efficiency:** By leveraging Fargate serverless containers and stopping idle components, monthly infrastructure costs are optimized. Operational costs are estimated at $90 to $110 per month for load testing, offering a superior ROI compared to provisioning physical servers on-premises.
+- **Cost Efficiency:** By leveraging Fargate serverless containers and stopping idle components, monthly infrastructure costs are optimized. Operational costs are estimated at $100 to $120 per month for load testing, offering a superior ROI compared to provisioning physical servers on-premises.
 
 ### 3. Solution Architecture
 The architecture implements a 3-tier networking layout (Public, Private App, Private DB) within a custom AWS VPC:
@@ -124,12 +118,12 @@ Estimated infrastructure costs for running the environment for 1 month:
 - **VPC NAT Gateway:** ~$32.40/month ($0.045/hour in 1 AZ).
 - **Application Load Balancer:** ~$16.20/month ($0.0225/hour).
 - **Amazon RDS (db.t3.micro Multi-AZ PostgreSQL):** ~$26.28/month (db.t3.micro instance with 20GB gp3 storage).
-- **AWS ECS Fargate Tasks (vCPU & RAM):** ~$21.00/month (Backend task 0.5 vCPU/1GB RAM and Frontend task 0.25 vCPU/0.5GB RAM running continuously).
+- **AWS ECS Fargate Tasks (vCPU & RAM):** ~$30.00/month (Backend task 1 vCPU/2GB RAM and Frontend task 0.25 vCPU/0.5GB RAM running continuously).
 - **AWS KMS Key:** $1.00/month.
 - **Amazon S3 & CloudWatch Logs:** ~$3.00/month (log storage and compressed snapshot size).
 - **Amazon SNS:** $0.00/month (within Free Tier limits).
 
-**Total Estimated Cost:** ~$100.00/month (~$1,200.00/year).
+**Total Estimated Cost:** ~$110.00/month (~$1,320.00/year).
 
 ### 7. Risk Assessment
 #### Risk Matrix

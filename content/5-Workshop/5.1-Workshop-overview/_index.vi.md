@@ -6,9 +6,9 @@ chapter : false
 pre : " <b> 5.1. </b> "
 ---
 
-#### Giới thiệu về Hệ thống Payment Gateway Microservices
+#### Giới thiệu về Hệ thống High-Concurrency Payment Gateway
 
-Hệ thống Cổng thanh toán (Payment Gateway) được triển khai trong bài thực hành này là một ứng dụng microservices được xây dựng bằng **Spring Boot** (cho Backend) và **React Vite** (cho Frontend). Dự án bao gồm các dịch vụ thành phần:
+Hệ thống High-Concurrency Payment Gateway được triển khai trong bài thực hành này là một ứng dụng microservices được xây dựng bằng **Spring Boot** (cho Backend) và **React Vite** (cho Frontend). Dự án bao gồm các dịch vụ thành phần:
 - **API Gateway (Port 8080):** Tiếp nhận toàn bộ các request từ bên ngoài và route đến các dịch vụ nội bộ tương ứng.
 - **Account Service (Port 8082):** Quản lý tài khoản khách hàng, đăng ký và số dư (Balance).
 - **Payment Service (Port 8083):** Thực hiện xử lý giao dịch thanh toán và nạp/rút tiền tích hợp cơ chế chống trùng lặp (Idempotency) sử dụng **Redis Distributed Lock**.

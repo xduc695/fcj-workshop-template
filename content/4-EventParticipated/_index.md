@@ -8,7 +8,7 @@ pre: " <b> 4. </b> "
 During my internship, I participated in 3 events. Each one was a memorable experience that provided new, interesting, and useful knowledge, along with gifts and wonderful moments.
 
 ### [Event 1](4.1-Event1/)  
-&emsp;**Event Name:** First Cloud AI Journey (Event 1)  
+&emsp;**Event Name:** FCJ Community Day - AI & Prompt Engineering  
 
 &emsp;**Date & Time:** 09:00, May 04, 2026  
 
@@ -29,7 +29,7 @@ During my internship, I participated in 3 events. Each one was a memorable exper
 ---
 
 ### [Event 2](4.2-Event2/)  
-&emsp;**Event Name:** First Cloud AI Journey (Event 2)  
+&emsp;**Event Name:** FCJ Community Day - Stop Procrastinating, Start Building  
 
 &emsp;**Date & Time:** 09:00, May 30, 2026  
 
@@ -52,7 +52,7 @@ During my internship, I participated in 3 events. Each one was a memorable exper
 ---
 
 ### [Event 3](4.3-Event3/)  
-&emsp;**Event Name:** First Cloud AI Journey (Event 3)  
+&emsp;**Event Name:** FCJ Community Day - From Zero to Cloud Hero  
 
 &emsp;**Date & Time:** 09:00, June 06, 2026  
 

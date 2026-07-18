@@ -31,7 +31,7 @@ Hạ tầng mới thiết lập trên AWS giải quyết triệt để các vấ
 *Lợi ích và hoàn vốn đầu tư (ROI)*  
 - **An toàn bảo mật tối đa:** Đạt tiêu chuẩn an toàn dữ liệu tài chính nhờ cô lập mạng lưới và mã hóa KMS.
 - **Giảm thời gian chết (Downtime):** Tự động phát hiện lỗi qua Target Group Health Check của ALB để tự động phục hồi (Recreate) container bị lỗi.
-- **Hiệu quả chi phí:** Nhờ tính năng serverless của Fargate và cơ chế tắt/xóa tài nguyên thừa, chi phí vận hành ước tính dao động khoảng 90 - 110 USD/tháng cho môi trường test tải trọng lớn, mang lại hiệu quả ROI vượt trội so với việc tự xây dựng hạ tầng vật lý tại on-premises.
+- **Hiệu quả chi phí:** Nhờ tính năng serverless của Fargate và cơ chế tắt/xóa tài nguyên thừa, chi phí vận hành ước tính dao động khoảng 100 - 120 USD/tháng cho môi trường test tải trọng lớn, mang lại hiệu quả ROI vượt trội so với việc tự xây dựng hạ tầng vật lý tại on-premises.
 
 ### 3. Kiến trúc giải pháp  
 Hạ tầng Payment Gateway áp dụng kiến trúc mạng 3 lớp (Public, Private App, Private DB) chạy hoàn toàn trên AWS.
@@ -113,12 +113,12 @@ Dự án được xây dựng và triển khai qua 4 giai đoạn chính:
 - **VPC NAT Gateway:** ~32,40 USD/tháng (0,045 USD/giờ cho 1 AZ).
 - **Application Load Balancer (ALB):** ~16,20 USD/tháng (0,0225 USD/giờ).
 - **Amazon RDS (db.t3.micro Multi-AZ PostgreSQL):** ~26,28 USD/tháng (lớp db.t3.micro kèm ổ SSD gp3 20GB).
-- **AWS ECS Fargate Tasks (CPU & RAM):** ~21,00 USD/tháng (Backend Task 0.5 vCPU/1GB RAM và Frontend Task 0.25 vCPU/0.5GB RAM chạy liên tục).
+- **AWS ECS Fargate Tasks (CPU & RAM):** ~30,00 USD/tháng (Backend Task 1 vCPU/2GB RAM và Frontend Task 0.25 vCPU/0.5GB RAM chạy liên tục).
 - **AWS KMS Key:** 1,00 USD/tháng.
 - **Amazon S3 & CloudWatch Logs:** ~3,00 USD/tháng (lưu trữ logs và file nén backup).
 - **Amazon SNS:** 0,00 USD/tháng (trong hạn mức Free Tier).
 
-*Tổng chi phí ước tính:* ~100 USD/tháng (~1.200 USD/năm).
+*Tổng chi phí ước tính:* ~110 USD/tháng (~1.320 USD/năm).
 
 ### 7. Đánh giá rủi ro  
 *Ma trận rủi ro*  

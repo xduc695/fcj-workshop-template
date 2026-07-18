@@ -25,7 +25,7 @@ Trước khi truy cập giao diện web, chúng ta cần đảm bảo Applicatio
 ### Bước 10.2: Truy cập và Kiểm thử Giao diện Web
 1. Vào dịch vụ **EC2** -> Chọn **Load Balancers** -> Click chọn **`pg-alb`**.
 2. Sao chép địa chỉ **DNS name**
-3. Dán địa chỉ DNS này vào trình duyệt web để truy cập giao diện **NextGenPay**:
+3. Dán địa chỉ DNS này vào trình duyệt web để truy cập giao diện **High-Concurrency Payment Gateway**:
 
 ![web](/images/h82.png)
 ![thanh toán và kiểm toán tài khoản](/images/h84.png)
@@ -77,4 +77,4 @@ Sau khi thực hiện bài kiểm tra giả lập tải cường độ cao bằn
 
 ![Trạng thái CloudWatch Alarms](/images/h89.png)
 
-**Kết luận:** Hệ thống Payment Gateway đã hoàn toàn sẵn sàng cho môi trường Production, đáp ứng xuất sắc các tiêu chuẩn khắt khe nhất về độ tin cậy (Reliability), khả năng mở rộng (Scalability) và tính nhất quán dữ liệu (Consistency).
+**Kết luận:** Hệ thống High-Concurrency Payment Gateway đã hoàn toàn sẵn sàng cho môi trường Production, đáp ứng xuất sắc các tiêu chuẩn khắt khe nhất về độ tin cậy (Reliability), khả năng mở rộng (Scalability) và tính nhất quán dữ liệu (Consistency).

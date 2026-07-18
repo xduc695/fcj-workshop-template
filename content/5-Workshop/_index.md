@@ -5,11 +5,6 @@ weight: 5
 chapter: false
 pre: " <b> 5. </b> "
 ---
-
-{{% notice warning %}}
-⚠️ **Note:** The information below is for reference purposes only, please **do not copy verbatim** for your report, including this warning.
-{{% /notice %}}
-
 # Deploying a High-Performance Payment System on AWS ECS Fargate with Private Subnets, RDS PostgreSQL, and S3 Backup
 
 #### Overview

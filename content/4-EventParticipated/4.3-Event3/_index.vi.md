@@ -5,7 +5,7 @@ weight: 3
 chapter: false
 pre: " <b> 4.3. </b> "
 ---
-# Bài thu hoạch “First Cloud AI Journey”
+# Bài thu hoạch “FCJ Community Day - From Zero to Cloud Hero”
 
 ### Mục Đích Của Sự Kiện
 
@@ -107,5 +107,8 @@ Tham gia sự kiện **First Cloud AI Journey (Event 3)** là một hành trình
 - Kỹ năng chuyên môn vững chắc và tư duy tự động hóa workflows (Docker, IaC, CI/CD) là yếu tố sống còn để loại bỏ lỗi chủ quan của con người, đảm bảo tính nhất quán của hệ thống đám mây.
 - AI không còn dừng lại ở mức công cụ hỏi đáp đơn giản; việc kết hợp AI cùng cấu trúc dữ liệu đồ thị tri thức (GraphRAG) tạo nên bước nhảy vọt về năng lực xử lý thông tin phức tạp cho doanh nghiệp.
 - Điểm xuất phát của bạn trong ngành công nghệ không quyết định vị trí tương lai; chính tinh thần Builder sẵn sàng dấn thân, liên tục thực hành, gỡ lỗi thực chiến và phá vỡ vùng an toàn mới là chìa khóa mở cánh cửa trở thành một chuyên gia cao cấp.
-
+### Một số hình ảnh khi tham gia sự kiện
+![Event 3](/images/b8.jpg)
+![Event 3](/images/b9.jpg)
+![Event 3](/images/b10.jpg)
 > Tổng thể, sự kiện First Cloud AI Journey (Event 3) đã mang lại nguồn năng lượng hành động bùng nổ cùng khối lượng kiến thức thực chiến đỉnh cao. Sự kiện xác lập một triết lý phát triển toàn diện: Hãy làm chủ hạ tầng của chính mình, dũng cảm đối mặt với các thách thức an ninh mạng và liên tục nâng cấp năng lực bản thân qua từng hành động thực tế nhỏ nhất.

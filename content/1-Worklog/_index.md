@@ -5,35 +5,32 @@ weight: 1
 chapter: false
 pre: " <b> 1. </b> "
 ---
+This **Worklog** records the entire internship and in-depth learning roadmap over the **12 weeks** of participating in the **First Cloud AI Journey (FCAJ)** program.
 
-{{% notice warning %}}
-⚠️ **Note:** The information below is for reference purposes only. Please **do not copy verbatim** for your report, including this warning.
-{{% /notice %}}
+The core focus of this journey is acquiring foundational knowledge of AWS cloud computing, combined with practical experience in designing, programming, and deploying a real-world project named **High-Concurrency Payment Gateway** — a highly scalable, fault-tolerant, 3-tier secure Microservices payment gateway system.
 
-**On this page**, you will need to introduce your worklog. **How** did you complete it? How many weeks did you take to complete the program? **What** did you do in those weeks?
+Below is a detailed summary of the progress week by week:
 
-Typically, and as a standard, a worklog is carried out over about 3 months (throughout the internship period) with weekly contents as follows:
+**Week 1:** [Onboarding, AWS CLI configuration, AWS Budgets cost management, and IAM security](1.1-Week1/)
 
-**Week 1:** [Getting familiar with AWS and basic AWS services](1.1-week1/)
+**Week 2:** [Researching VPC network architecture, EC2 virtual servers, and Auto Scaling mechanisms](1.2-Week2/)
 
-**Week 2:** [Doing task A...](1.2-week2/)
+**Week 3:** [Researching Load Balancers (ALB), S3/EBS storage, RDS/DynamoDB databases, and Route 53](1.3-Week3/)
 
-**Week 3:** [Doing task B...](1.3-week3/)
+**Week 4:** [Solidifying Linux and Git knowledge, configuring Nginx web servers, Reverse Proxy, and Caching](1.4-Week4/)
 
-**Week 4:** [Doing task C...](1.4-week4/)
+**Week 5:** [Practicing Microservices Dockerization (Spring Boot & React Vite) with Docker Compose](1.5-Week5/)
 
-**Week 5:** [Doing task D...](1.5-week5/)
+**Week 6:** [Deploying centralized monitoring with CloudWatch, SNS alerts, and AWS X-Ray Tracing](1.6-Week6/)
 
-**Week 6:** [Doing task E...](1.6-week6/)
+**Week 7:** [Designing Payment System Databases and configuring GitHub Actions CI/CD for ECS](1.7-Week7/)
 
-**Week 7:** [Doing task G...](1.7-week7/)
+**Week 8:** [Developing core Backend services, optimizing Lambda EC2 automation, and integrating Amazon Cognito](1.8-Week8/)
 
-**Week 8:** [Doing task H...](1.8-week8/)
+**Week 9:** [Researching AppSync GraphQL, Amplify Hosting, ECS Fargate, and the Outbox Pattern architecture](1.9-Week9/)
 
-**Week 9:** [Doing task I...](1.9-week9/)
+**Week 10:** [Integrating Redis (Caching, JWT Rate Limiting, Distributed Lock) and configuring FinOps with Athena](1.10-Week10/)
 
-**Week 10:** [Doing task L...](1.10-week10/)
+**Week 11:** [Migrating the entire project to AWS, writing Workshop documentation, and Event/Blog Reports](1.11-Week11/)
 
-**Week 11:** [Doing task M...](1.11-week11/)
-
-**Week 12:** [Doing task N...](1.12-week12/)
+**Week 12:** [Final handover, completing the Proposal, Self-Evaluation, and Feedback](1.12-Week12/)

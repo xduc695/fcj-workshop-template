@@ -19,17 +19,17 @@ chapter: false
 
 &emsp; **Email:** xuanducdong2004@gmail.com
 
-&emsp; **University:** Ho Chi Minh City University of Technology and Education
+&emsp; **University:** Ho Chi Minh City University of Technology (HUTECH)
 
 &emsp; **Major:** Information Technology
 
-&emsp; **Class:** AWS042026
+&emsp; **Class:** 22DTHC3
 
 &emsp; **Internship Company:** Amazon Web Services Vietnam Co., Ltd.
 
 &emsp; **Internship Position:** FCJ Cloud Intern
 
-&emsp; **Internship Duration:** From 17/04/2026 to 10/07/2026
+&emsp; **Internship Duration:** From 17/04/2026 to 30/07/2026
 
 ![Your profile picture](/images/avatar.png)
 

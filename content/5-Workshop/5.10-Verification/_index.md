@@ -25,7 +25,7 @@ Before accessing the web UI, we must ensure that the Application Load Balancer h
 ### Step 10.2: Access and Test the Web Interface
 1. Go to the **EC2** service -> click **Load Balancers** -> select **`pg-alb`**.
 2. Copy the **DNS name**
-3. Paste this DNS address into your web browser to access the **NextGenPay** application:
+3. Paste this DNS address into your web browser to access the **High-Concurrency Payment Gateway** application:
 
 ![web](/images/h82.png)
 ![thanh toán và kiểm toán tài khoản](/images/h84.png)
@@ -77,4 +77,4 @@ After executing a high-concurrency load test using `k6`, we will review the achi
 
 ![CloudWatch Alarms Status](/images/h89.png)
 
-**Conclusion:** The Payment Gateway system is now completely production-ready, successfully meeting the strictest standards for Reliability, Scalability, and Data Consistency.
+**Conclusion:** The High-Concurrency Payment Gateway system is now completely production-ready, successfully meeting the strictest standards for Reliability, Scalability, and Data Consistency.

@@ -6,9 +6,9 @@ chapter : false
 pre : " <b> 5.1. </b> "
 ---
 
-#### Introduction to Payment Gateway Microservices System
+#### Introduction to High-Concurrency Payment Gateway System
 
-The Payment Gateway system deployed in this workshop is a microservices application built with **Spring Boot** (for Backend) and **React Vite** (for Frontend). The project includes the following component services:
+The High-Concurrency Payment Gateway system deployed in this workshop is a microservices application built with **Spring Boot** (for Backend) and **React Vite** (for Frontend). The project includes the following component services:
 - **API Gateway (Port 8080):** Receives all external requests and routes them to the corresponding internal services.
 - **Account Service (Port 8082):** Manages customer accounts, registrations, and balances (Balance).
 - **Payment Service (Port 8083):** Processes payment transactions and deposits/withdrawals, integrating an Idempotency mechanism using **Redis Distributed Lock**.

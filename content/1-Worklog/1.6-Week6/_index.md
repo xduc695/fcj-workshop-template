@@ -5,53 +5,28 @@ weight: 1
 chapter: false
 pre: " <b> 1.6. </b> "
 ---
-{{% notice warning %}} 
-⚠️ **Note:** The following information is for reference purposes only. Please **do not copy verbatim** for your own report, including this warning.
-{{% /notice %}}
-
-
 ### Week 6 Objectives:
 
-* Connect and get acquainted with members of First Cloud Journey.
-* Understand basic AWS services, how to use the console & CLI.
+* Learn about services supporting Front-end deployment, content delivery networks, and web application security.
+* Learn about Serverless computing architecture and how to manage and route API communications.
+* Learn about orchestration platforms and Container management systems (Docker/Kubernetes) in the cloud.
+* Learn about real-time data streaming solutions and asynchronous message queues.
+* Learn about the data integration process (ETL) and massive data processing platforms (Big Data).
+* Learn about Data Warehouse solutions, Business Intelligence (BI) visualization tools, and Generative AI platforms.
 
-### Tasks to be carried out this week:
-| Day | Task                                                                                                                                                                                                   | Start Date | Completion Date | Reference Material                        |
-| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------- | --------------- | ----------------------------------------- |
-| 2   | - Get acquainted with FCJ members <br> - Read and take note of internship unit rules and regulations                                                                                                   | 08/11/2025 | 08/11/2025      |
-| 3   | - Learn about AWS and its types of services <br>&emsp; + Compute <br>&emsp; + Storage <br>&emsp; + Networking <br>&emsp; + Database <br>&emsp; + ... <br>                                              | 08/12/2025 | 08/12/2025      | <https://cloudjourney.awsstudygroup.com/> |
-| 4   | - Create AWS Free Tier account <br> - Learn about AWS Console & AWS CLI <br> - **Practice:** <br>&emsp; + Create AWS account <br>&emsp; + Install & configure AWS CLI <br> &emsp; + How to use AWS CLI | 08/13/2025 | 08/13/2025      | <https://cloudjourney.awsstudygroup.com/> |
-| 5   | - Learn basic EC2: <br>&emsp; + Instance types <br>&emsp; + AMI <br>&emsp; + EBS <br>&emsp; + ... <br> - SSH connection methods to EC2 <br> - Learn about Elastic IP   <br>                            | 08/14/2025 | 08/15/2025      | <https://cloudjourney.awsstudygroup.com/> |
-| 6   | - **Practice:** <br>&emsp; + Launch an EC2 instance <br>&emsp; + Connect via SSH <br>&emsp; + Attach an EBS volume                                                                                     | 08/15/2025 | 08/15/2025      | <https://cloudjourney.awsstudygroup.com/> |
-
+### Tasks to be implemented this week:
+| Day | Task | Start Date | End Date | Resource Links |
+| --- | --- | --- | --- | --- |
+| Monday | - Learn about Front-end services and web application security: <br>&emsp; + AWS Amplify <br>&emsp; + Amazon CloudFront <br>&emsp; + AWS WAF | 05/25/2026 | 05/25/2026 | <https://cloudjourney.awsstudygroup.com/> |
+| Tuesday | - Learn about Serverless architecture and API routing: <br>&emsp; + AWS API Gateway <br>&emsp; + AWS Lambda | 05/26/2026 | 05/26/2026 | <https://cloudjourney.awsstudygroup.com/> |
+| Wednesday | - Learn about Container orchestration and management platforms: <br>&emsp; + Amazon ECS <br>&emsp; + Amazon EKS | 05/27/2026 | 05/27/2026 | <https://cloudjourney.awsstudygroup.com/> |
+| Thursday | - Learn about real-time streaming services: <br>&emsp; + Amazon Kinesis <br>&emsp; + Amazon MSK (Apache Kafka) | 05/28/2026 | 05/28/2026 | <https://cloudjourney.awsstudygroup.com/> |
+| Friday | - Learn about the data integration process and Big Data platforms: <br>&emsp; + AWS Glue <br>&emsp; + Amazon EMR <br> - Learn about Data Warehouses, BI analytics, and Generative AI: <br>&emsp; + Amazon Redshift <br>&emsp; + Amazon QuickSight <br>&emsp; + Amazon Bedrock | 05/29/2026 | 05/29/2026 | <https://cloudjourney.awsstudygroup.com/> |
 
 ### Week 6 Achievements:
-
-* Understood what AWS is and mastered the basic service groups: 
-  * Compute
-  * Storage
-  * Networking 
-  * Database
-  * ...
-
-* Successfully created and configured an AWS Free Tier account.
-
-* Became familiar with the AWS Management Console and learned how to find, access, and use services via the web interface.
-
-* Installed and configured AWS CLI on the computer, including:
-  * Access Key
-  * Secret Key
-  * Default Region
-  * ...
-
-* Used AWS CLI to perform basic operations such as:
-
-  * Check account & configuration information
-  * Retrieve the list of regions
-  * View EC2 service
-  * Create and manage key pairs
-  * Check information about running services
-  * ...
-
-* Acquired the ability to connect between the web interface and CLI to manage AWS resources in parallel.
-* ...
+* Understood how to deploy and secure webs with AWS Amplify, CloudFront, and AWS WAF.
+* Mastered Serverless architecture using AWS API Gateway and AWS Lambda.
+* Grasped Container orchestration concepts using Amazon ECS and Amazon EKS.
+* Understood real-time and asynchronous data streaming with Amazon Kinesis and Amazon MSK.
+* Understood ETL processes and Big Data with AWS Glue and Amazon EMR.
+* Learned to leverage Data Warehouses (Amazon Redshift), BI (Amazon QuickSight), and Generative AI (Amazon Bedrock).

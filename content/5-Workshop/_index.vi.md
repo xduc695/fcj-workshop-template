@@ -5,16 +5,11 @@ weight: 5
 chapter: false
 pre: " <b> 5. </b> "
 ---
-
-{{% notice warning %}}
-⚠️ **Lưu ý:** Các thông tin dưới đây chỉ nhằm mục đích tham khảo, vui lòng **không sao chép nguyên văn** cho bài báo cáo của bạn kể cả warning này.
-{{% /notice %}}
-
 # Triển khai Hệ thống Thanh toán hiệu năng cao trên AWS ECS Fargate với Private Subnets, RDS PostgreSQL và S3 Backup
 
 #### Tổng quan
 
-Trong workshop này, chúng ta sẽ cùng nhau tự tay xây dựng và triển khai một hệ thống hạ tầng đám mây hoàn chỉnh, bảo mật và chịu tải cao trên AWS cho một ứng dụng **Payment Gateway Microservices**.
+Trong workshop này, chúng ta sẽ cùng nhau tự tay xây dựng và triển khai một hệ thống hạ tầng đám mây hoàn chỉnh, bảo mật và chịu tải cao trên AWS cho một ứng dụng **High-Concurrency Payment Gateway**.
 
 Hệ thống sẽ được thiết kế theo các tiêu chuẩn bảo mật doanh nghiệp bao gồm phân lập **Public/Private Subnets**, sử dụng **Application Load Balancer (ALB)** để nhận và route traffic, chạy các **microservices backend** gộp kèm **Redis sidecar** trên **AWS ECS Fargate**, kết nối với cơ sở dữ liệu **Amazon RDS PostgreSQL** chạy nội bộ và thiết lập cơ chế **S3 Backup & Recovery** qua tính năng **Snapshot Export** kết hợp với **KMS Key**.
 
