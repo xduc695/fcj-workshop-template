@@ -5,11 +5,11 @@ weight: 5
 chapter: false
 pre: " <b> 5. </b> "
 ---
-# Deploying a High-Performance Payment System on AWS ECS Fargate with Private Subnets, RDS PostgreSQL, and S3 Backup
+# Deploying High-Concurrency Payment Gateway on AWS ECS Fargate with Private Subnets, RDS PostgreSQL, and S3 Backup
 
 #### Overview
 
-In this workshop, we will manually build and deploy a complete, secure, and highly available cloud infrastructure on AWS for a **Payment Gateway Microservices** application.
+In this workshop, we will manually build and deploy a complete, secure, and highly available cloud infrastructure on AWS for a **High-Concurrency Payment Gateway** application.
 
 The system will be designed according to enterprise security standards, including **Public/Private Subnets** segregation, using an **Application Load Balancer (ALB)** to receive and route traffic, running **backend microservices** bundled with a **Redis sidecar** on **AWS ECS Fargate**, connecting to an internal **Amazon RDS PostgreSQL** database, and setting up an **S3 Backup & Recovery** mechanism via the **Snapshot Export** feature integrated with a **KMS Key**.
 

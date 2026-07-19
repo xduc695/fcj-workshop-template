@@ -5,7 +5,7 @@ weight: 5
 chapter: false
 pre: " <b> 5. </b> "
 ---
-# Triển khai Hệ thống Thanh toán hiệu năng cao trên AWS ECS Fargate với Private Subnets, RDS PostgreSQL và S3 Backup
+# Triển khai High-Concurrency Payment Gateway trên AWS ECS Fargate với Private Subnets, RDS PostgreSQL và S3 Backup
 
 #### Tổng quan
 

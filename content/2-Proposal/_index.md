@@ -9,7 +9,7 @@ pre: " <b> 2. </b> "
 ## 3-Tier Secure Networking with ECS Fargate and S3 Backup
 
 ### 1. Executive Summary
-The **High-Concurrency Payment Gateway** project is designed to provide a highly secure, scalable, and resilient cloud infrastructure on AWS for a microservice-based payment application. The goal is to migrate the Payment Gateway from local development environments to a production-grade AWS architecture. The design utilizes a **3-tier VPC network (Public/Private Subnets)** to isolate critical systems. Computing workloads are run on serverless **AWS ECS Fargate** (hosting Frontend Nginx, Spring Boot Backend microservices, and a Redis sidecar cache), while transaction data is stored in a private **Amazon RDS PostgreSQL** instance. Real-time logging, alarms, and automated database backups are integrated using **Amazon CloudWatch**, **Amazon SNS**, and encrypted **Amazon S3** snapshot exports with customer-managed KMS keys.
+The **High-Concurrency Payment Gateway** project is designed to provide a highly secure, scalable, and resilient cloud infrastructure on AWS for a microservice-based payment application. The goal is to migrate the High-Concurrency Payment Gateway from local development environments to a production-grade AWS architecture. The design utilizes a **3-tier VPC network (Public/Private Subnets)** to isolate critical systems. Computing workloads are run on serverless **AWS ECS Fargate** (hosting Frontend Nginx, Spring Boot Backend microservices, and a Redis sidecar cache), while transaction data is stored in a private **Amazon RDS PostgreSQL** instance. Real-time logging, alarms, and automated database backups are integrated using **Amazon CloudWatch**, **Amazon SNS**, and encrypted **Amazon S3** snapshot exports with customer-managed KMS keys.
 
 ### 2. Problem Statement
 #### What’s the Problem?
@@ -35,7 +35,7 @@ This AWS-based architecture resolves these challenges:
 
 ### 3. Solution Architecture
 The architecture implements a 3-tier networking layout (Public, Private App, Private DB) within a custom AWS VPC:
-![diagram](/images/diagram.jpg)
+![diagram](/images/diagram.png)
 
 #### AWS Services Used
 - **Amazon VPC**: Drives network virtualization (4 Subnets, Route Tables, Internet Gateway, and NAT Gateway).

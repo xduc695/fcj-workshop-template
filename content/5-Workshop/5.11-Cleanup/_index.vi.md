@@ -63,7 +63,7 @@ NAT Gateway là tài nguyên tính phí theo giờ rất cao nên cần phải x
 ### Bước 11.6: Xóa ECR Repositories, S3 Bucket và KMS Key
 1. **ECR Repositories:** Vào dịch vụ **ECR** -> Tích chọn 2 repositories `pg-combined-backend` và `pg-frontend` -> Nhấn **Delete** để xóa các Docker Images.
 2. **S3 Bucket:**
-   - Vào dịch vụ **S3** -> Click chọn S3 Bucket **`pg-db-backups-795938553282-ap-southeast-1-an`**.
+   - Vào dịch vụ **S3** -> Click chọn S3 Bucket **`pg-db-backups-<account-id>-ap-southeast-1-an`**.
    - Click nút **Empty** để xóa toàn bộ các tệp snapshot bên trong -> Xác nhận.
    - Quay lại danh sách Bucket -> Tích chọn bucket đó và nhấn nút **Delete** -> Nhập tên bucket để xác nhận xóa vĩnh viễn.
 3. **KMS Key:** Vào dịch vụ **KMS** -> click chọn khóa **`pg-s3-export-key`** -> click **Key actions** -> chọn **Schedule key deletion** -> Chọn số ngày tối thiểu (7 ngày) -> nhấn xác nhận.

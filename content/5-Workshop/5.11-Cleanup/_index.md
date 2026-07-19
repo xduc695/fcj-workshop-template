@@ -63,7 +63,7 @@ The NAT Gateway is a resource with a very high hourly charge, so it needs to be 
 ### Step 11.6: Delete ECR Repositories, S3 Bucket, and KMS Key
 1. **ECR Repositories:** Go to the **ECR** service -> Check the 2 repositories `pg-combined-backend` and `pg-frontend` -> Click **Delete** to delete the Docker Images.
 2. **S3 Bucket:**
-   - Go to the **S3** service -> Click the S3 Bucket **`pg-db-backups-795938553282-ap-southeast-1-an`**.
+   - Go to the **S3** service -> Click the S3 Bucket **`pg-db-backups-<account-id>-ap-southeast-1-an`**.
    - Click the **Empty** button to delete all snapshot files inside -> Confirm.
    - Go back to the Bucket list -> Check that bucket and click the **Delete** button -> Enter the bucket name to confirm permanent deletion.
 3. **KMS Key:** Go to the **KMS** service -> click the **`pg-s3-export-key`** key -> click **Key actions** -> select **Schedule key deletion** -> Select the minimum number of days (7 days) -> click confirm.

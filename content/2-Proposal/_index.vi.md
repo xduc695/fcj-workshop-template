@@ -9,7 +9,7 @@ pre: " <b> 2. </b> "
 ## Hạ tầng Cổng thanh toán Hiệu năng cao bảo mật 3 lớp với ECS Fargate và S3 Backup  
 
 ### 1. Tóm tắt điều hành  
-Hệ thống **High-Concurrency Payment Gateway** được thiết kế nhằm cung cấp một hạ tầng cổng thanh toán trực tuyến bảo mật, chịu tải tốt và có khả năng phục hồi thảm họa cao trên nền tảng AWS. Dự án này phục vụ việc chuyển đổi mô hình ứng dụng Payment Gateway Microservices từ môi trường phát triển cục bộ lên hạ tầng đám mây đạt tiêu chuẩn Production-ready. Hạ tầng áp dụng mô hình phân tách mạng **VPC 3-tier (Public/Private Subnets)** kết hợp giữa **Application Load Balancer (ALB)**, **AWS ECS Fargate** cho serverless containers (Frontend Nginx, Spring Boot Backend và Redis sidecar), cơ sở dữ liệu **Amazon RDS PostgreSQL** cô lập, hệ thống giám sát CloudWatch Alarm cùng cơ chế tự động hóa **S3 Backup & Recovery** sử dụng khóa KMS tùy chỉnh.
+Hệ thống **High-Concurrency Payment Gateway** được thiết kế nhằm cung cấp một hạ tầng cổng thanh toán trực tuyến bảo mật, chịu tải tốt và có khả năng phục hồi thảm họa cao trên nền tảng AWS. Dự án này phục vụ việc chuyển đổi mô hình ứng dụng High-Concurrency Payment Gateway từ môi trường phát triển cục bộ lên hạ tầng đám mây đạt tiêu chuẩn Production-ready. Hạ tầng áp dụng mô hình phân tách mạng **VPC 3-tier (Public/Private Subnets)** kết hợp giữa **Application Load Balancer (ALB)**, **AWS ECS Fargate** cho serverless containers (Frontend Nginx, Spring Boot Backend và Redis sidecar), cơ sở dữ liệu **Amazon RDS PostgreSQL** cô lập, hệ thống giám sát CloudWatch Alarm cùng cơ chế tự động hóa **S3 Backup & Recovery** sử dụng khóa KMS tùy chỉnh.
 
 ### 2. Tuyên bố vấn đề  
 *Vấn đề hiện tại*  
@@ -34,9 +34,9 @@ Hạ tầng mới thiết lập trên AWS giải quyết triệt để các vấ
 - **Hiệu quả chi phí:** Nhờ tính năng serverless của Fargate và cơ chế tắt/xóa tài nguyên thừa, chi phí vận hành ước tính dao động khoảng 100 - 120 USD/tháng cho môi trường test tải trọng lớn, mang lại hiệu quả ROI vượt trội so với việc tự xây dựng hạ tầng vật lý tại on-premises.
 
 ### 3. Kiến trúc giải pháp  
-Hạ tầng Payment Gateway áp dụng kiến trúc mạng 3 lớp (Public, Private App, Private DB) chạy hoàn toàn trên AWS.
+Hạ tầng High-Concurrency Payment Gateway áp dụng kiến trúc mạng 3 lớp (Public, Private App, Private DB) chạy hoàn toàn trên AWS.
 
-![diagram](/images/diagram.jpg)
+![diagram](/images/diagram.png)
 
 *Dịch vụ AWS sử dụng*  
 - *Amazon VPC*: Quản lý hạ tầng mạng ảo gồm 4 Subnets, Route Tables, Internet Gateway và NAT Gateway.
