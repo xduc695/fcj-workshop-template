@@ -36,46 +36,7 @@ Hạ tầng mới thiết lập trên AWS giải quyết triệt để các vấ
 ### 3. Kiến trúc giải pháp  
 Hạ tầng Payment Gateway áp dụng kiến trúc mạng 3 lớp (Public, Private App, Private DB) chạy hoàn toàn trên AWS.
 
-```mermaid
-graph TD
-    User([Trình duyệt Người dùng]) -->|Cổng HTTP 80| ALB[Application Load Balancer]
-    
-    subgraph VPC [Hạ tầng mạng AWS VPC 10.0.0.0/16]
-        subgraph PublicSubnets [Mạng công cộng - Public Subnets]
-            ALB
-            NGW[NAT Gateway]
-            EC2_B[EC2 Bastion Host <br> Cổng kết nối quản trị]
-        end
-        
-        subgraph PrivateSubnets [Mạng nội bộ bảo mật - Private Subnets]
-            F_FE[ECS Task: Frontend Nginx]
-            
-            subgraph BackendTask [ECS Task: pg-backend]
-                C_JAVA[Container: backend gộp <br> gateway, account, <br> payment, transaction]
-                C_REDIS[Container: redis sidecar]
-            end
-            
-            RDS[(Amazon RDS PostgreSQL <br> Private Instance)]
-        end
-    end
-    
-    S3[(Amazon S3 <br> Backup Bucket)]
-    
-    ALB -->|Mặc định /| F_FE
-    ALB -->|Đường dẫn /api/*| C_JAVA
-    
-    C_JAVA -->|Mạng nội bộ localhost:6379| C_REDIS
-    C_JAVA -->|Đăng ký JDBC cổng 5432| RDS
-    
-    EC2_B -->|Cổng 5432 nạp database| RDS
-    
-    RDS -->|Export Snapshot| S3
-    
-    F_FE & C_JAVA & C_REDIS -->|Kéo Image & Gửi Log| NGW -->|Kết nối ra ngoài| Internet((Internet công cộng))
-    NGW -->|Ghi logs| CW[CloudWatch Log Group]
-    
-    ALB -->|Chỉ số RequestCount| CWA[CloudWatch Alarm] -->|Kích hoạt cảnh báo| SNS[SNS Alerts Topic] -->|Gửi Mail| Mail(Hòm thư Email cá nhân)
-```
+![diagram](/images/diagram.jpg)
 
 *Dịch vụ AWS sử dụng*  
 - *Amazon VPC*: Quản lý hạ tầng mạng ảo gồm 4 Subnets, Route Tables, Internet Gateway và NAT Gateway.

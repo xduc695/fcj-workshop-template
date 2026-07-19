@@ -17,11 +17,11 @@ pre: " <b> 1.6. </b> "
 ### Tasks to be implemented this week:
 | Day | Task | Start Date | End Date | Resource Links |
 | --- | --- | --- | --- | --- |
-| Monday | - Learn about Front-end services and web application security: <br>&emsp; + AWS Amplify <br>&emsp; + Amazon CloudFront <br>&emsp; + AWS WAF | 05/25/2026 | 05/25/2026 | <https://cloudjourney.awsstudygroup.com/> |
-| Tuesday | - Learn about Serverless architecture and API routing: <br>&emsp; + AWS API Gateway <br>&emsp; + AWS Lambda | 05/26/2026 | 05/26/2026 | <https://cloudjourney.awsstudygroup.com/> |
-| Wednesday | - Learn about Container orchestration and management platforms: <br>&emsp; + Amazon ECS <br>&emsp; + Amazon EKS | 05/27/2026 | 05/27/2026 | <https://cloudjourney.awsstudygroup.com/> |
-| Thursday | - Learn about real-time streaming services: <br>&emsp; + Amazon Kinesis <br>&emsp; + Amazon MSK (Apache Kafka) | 05/28/2026 | 05/28/2026 | <https://cloudjourney.awsstudygroup.com/> |
-| Friday | - Learn about the data integration process and Big Data platforms: <br>&emsp; + AWS Glue <br>&emsp; + Amazon EMR <br> - Learn about Data Warehouses, BI analytics, and Generative AI: <br>&emsp; + Amazon Redshift <br>&emsp; + Amazon QuickSight <br>&emsp; + Amazon Bedrock | 05/29/2026 | 05/29/2026 | <https://cloudjourney.awsstudygroup.com/> |
+| Monday | - Learn about Front-end services and web application security: <br>&emsp; + AWS Amplify <br>&emsp; + Amazon CloudFront <br>&emsp; + AWS WAF | 25/05/2026 | 25/05/2026 | <https://cloudjourney.awsstudygroup.com/> |
+| Tuesday | - Learn about Serverless architecture and API routing: <br>&emsp; + AWS API Gateway <br>&emsp; + AWS Lambda | 26/05/2026 | 26/05/2026 | <https://cloudjourney.awsstudygroup.com/> |
+| Wednesday | - Learn about Container orchestration and management platforms: <br>&emsp; + Amazon ECS <br>&emsp; + Amazon EKS | 27/05/2026 | 27/05/2026 | <https://cloudjourney.awsstudygroup.com/> |
+| Thursday | - Learn about real-time streaming services: <br>&emsp; + Amazon Kinesis <br>&emsp; + Amazon MSK (Apache Kafka) | 28/05/2026 | 28/05/2026 | <https://cloudjourney.awsstudygroup.com/> |
+| Friday | - Learn about the data integration process and Big Data platforms: <br>&emsp; + AWS Glue <br>&emsp; + Amazon EMR <br> - Learn about Data Warehouses, BI analytics, and Generative AI: <br>&emsp; + Amazon Redshift <br>&emsp; + Amazon QuickSight <br>&emsp; + Amazon Bedrock | 29/05/2026 | 29/05/2026 | <https://cloudjourney.awsstudygroup.com/> |
 
 ### Week 6 Achievements:
 * Understood how to deploy and secure webs with AWS Amplify, CloudFront, and AWS WAF.

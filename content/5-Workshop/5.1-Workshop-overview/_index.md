@@ -19,7 +19,7 @@ The High-Concurrency Payment Gateway system deployed in this workshop is a micro
 
 The deployment model on AWS applies an isolated security mechanism:
 
-![Kiến trúc mạng](/images/5-Workshop/5.1-Workshop-overview/architecture_diagram.png)
+![diagram](/images/diagram.jpg)
 
 #### Architectural highlights:
 1. **Network Isolation:** Application Load Balancer (ALB) receives public traffic at the **Public Subnet** layer, while ECS Tasks and RDS PostgreSQL Database run entirely within the **Private Subnet** network to prevent the risk of port scanning or direct attacks.

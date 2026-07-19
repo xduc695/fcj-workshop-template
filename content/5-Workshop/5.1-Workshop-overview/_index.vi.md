@@ -19,7 +19,7 @@ Hệ thống High-Concurrency Payment Gateway được triển khai trong bài t
 
 Mô hình triển khai trên AWS áp dụng cơ chế bảo mật cô lập:
 
-![Kiến trúc mạng](/images/5-Workshop/5.1-Workshop-overview/architecture_diagram.png)
+![diagram](/images/diagram.jpg)
 
 #### Các điểm nổi bật của kiến trúc:
 1. **Network Isolation:** Application Load Balancer (ALB) đón nhận traffic công cộng tại tầng **Public Subnet**, trong khi đó các ECS Tasks và Cơ sở dữ liệu RDS PostgreSQL chạy hoàn toàn trong mạng **Private Subnet** nhằm ngăn ngừa nguy cơ bị quét cổng hoặc tấn công trực tiếp.
