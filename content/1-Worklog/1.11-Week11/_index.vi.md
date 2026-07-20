@@ -1,4 +1,4 @@
----
+﻿---
 title: "Worklog Tuần 11"
 date: 2024-01-01
 weight: 2
@@ -7,55 +7,49 @@ pre: " <b> 1.11. </b> "
 ---
 ### Mục tiêu tuần 11:
 
-* Dịch chuyển ứng dụng High-Concurrency Payment Gateway lên hạ tầng đám mây AWS (ECS Fargate, RDS, ALB, S3 KMS Export).
-* Thực hiện kiểm thử tải giả lập (k6) và đánh giá năng lực chịu tải, tính toàn vẹn dữ liệu thông qua hệ thống giám sát CloudWatch (Logs, Metrics, Alarms).
-* Xây dựng tài liệu hướng dẫn thực hành (Workshop) chi tiết hướng dẫn người dùng cuối trên AWS Console.
-* Tổng hợp kiến thức và hoàn thiện 03 bài báo cáo thu hoạch chi tiết về chuỗi sự kiện công nghệ *FCJ Community Day*.
-* Hệ thống hóa kiến thức thực chiến và hoàn thiện báo cáo về 03 bài viết Blog chuyên sâu đã đăng tải trên cộng đồng AWS Study Group VN.
+* Đóng gói mã nguồn ứng dụng bằng Docker và đẩy (push) các Docker Images lên Amazon ECR.
+* Thiết lập hệ thống mạng VPC 3-tier (Public/Private Subnets), IGW, NAT Gateway và Security Groups bảo mật.
+* Khởi tạo cơ sở dữ liệu Amazon RDS PostgreSQL trong Private Subnet và nạp schema qua EC2 Bastion Host.
+* Triển khai cụm máy chủ container serverless AWS ECS Fargate và bộ cân bằng tải Application Load Balancer (ALB).
+* Cấu hình hệ thống giám sát CloudWatch Alarms, SNS Notification và xuất bản sao lưu RDS Snapshot sang S3 Bucket mã hóa bằng KMS Key.
 
 ### Các công việc cần triển khai trong tuần này:
 | Ngày | Công việc | Ngày bắt đầu | Ngày hoàn thành | Nguồn tài liệu |
 | --- | --- | --- | --- | --- |
-| Thứ 2 | - Triển khai và kiểm thử hạ tầng ứng dụng thực chiến lên đám mây AWS:<br> - **Thực hành:** <br>&emsp; + Đóng gói Docker Images (Backend & Frontend) đẩy lên ECR.<br>&emsp; + Khởi chạy dịch vụ trên ECS Fargate.<br>&emsp; + Thiết lập RDS PostgreSQL cô lập trong Private Subnet và nạp schema qua EC2 Bastion Host.<br>&emsp; + Cấu hình giải pháp xuất RDS Snapshot định kỳ sang Amazon S3 bằng KMS Key. | 29/06/2026 | 29/06/2026 | <https://calculator.aws/> |
-| Thứ 3 | - Thực hiện kiểm thử tải giả lập và giám sát hiệu năng trên AWS:<br> - **Thực hành:** <br>&emsp; + Triển khai kịch bản giả lập tải k6 với 100 VUs liên tục tạo 10.000 giao dịch thanh toán.<br>&emsp; + Kiểm tra trạng thái Target Groups của ALB (Frontend, Backend).<br>&emsp; + Giám sát biểu đồ RequestCount và trạng thái Alarm trên CloudWatch.<br>&emsp; + Kiểm tra log ALB và CloudWatch Log Streams (`/ecs/pg-logs`) để đánh giá tỷ lệ lỗi. | 30/06/2026 | 30/06/2026 | |
-| Thứ 4 | - Hoàn thiện tài liệu Workshop thực hành (Step-by-step):<br> - **Thực hành:** <br>&emsp; + Biên soạn 10 phần tài liệu hướng dẫn thực hành (Workshop).<br>&emsp; + Mô tả chi tiết từng bước nhấp chuột trên AWS Console để build toàn bộ kiến trúc 3 lớp bảo mật. | 01/07/2026 | 01/07/2026 | |
-| Thứ 5 | - Viết bài thu hoạch Event 1: Tổng quan AI, Cloud & Chuẩn Software Engineering (Kiến trúc AI, Prompt Engineering, hệ thống Agent). <br> - Viết bài thu hoạch Event 2: Lộ trình tự học AWS, GenAI Pipeline cho Startup và DevOps (Chuyển dịch Serverless, GenAI 3 lớp, DevOps Foundation). <br> - Viết bài thu hoạch Event 3: Kiến trúc thời gian thực, GraphRAG, An ninh mạng ML và Dịch chuyển sự nghiệp (WebSocket, GraphRAG, LightGBM, DevOps). | 02/07/2026 | 02/07/2026 | |
-| Thứ 6 | - Biên soạn bài Blog 1: Tự động hóa CI/CD với GitHub Actions và Amazon ECS Express Mode (OIDC, tự động tag image, ECS AWS Fargate). <br> - Biên soạn bài Blog 2: Phục hồi thảm họa cho Stateful Services trên Amazon EKS bằng Velero (Tệp .tar.gz S3, EBS Snapshots, lỗi kẹt Pod). <br> - Biên soạn bài Blog 3: Tối ưu chi phí với EC2 Capacity Manager và Amazon Athena (Parquet S3, Partition Projection, 3 kịch bản SQL FinOps). | 03/07/2026 | 03/07/2026 | |
+| Thứ 2 | - Đóng gói ứng dụng và quản lý ECR Repository:<br>&emsp; + Đóng gói mã nguồn Backend (Spring Boot) và Frontend (Nginx) bằng Docker.<br>&emsp; + Khởi tạo Amazon ECR Repositories (pg-backend, pg-frontend).<br>&emsp; + Build và push Docker Images từ môi trường phát triển lên Amazon ECR. | 29/06/2026 | 29/06/2026 | <https://xduc695.github.io/fcj-workshop-template/vi/5-workshop/5.2-prerequiste/> |
+| Thứ 3 | - Thiết lập hạ tầng mạng VPC và Security Groups:<br>&emsp; + Khởi tạo VPC 3-tier trên 2 Availability Zones (AZs) với Public/Private Subnets.<br>&emsp; + Cấu hình Internet Gateway (IGW) và NAT Gateway cho kết nối đi ra ngoài.<br>&emsp; + Thiết lập các Security Groups cách ly cho ALB, ECS Fargate, RDS và Bastion Host. | 30/06/2026 | 30/06/2026 | <https://xduc695.github.io/fcj-workshop-template/vi/5-workshop/5.3-vpc-networking/><br><https://xduc695.github.io/fcj-workshop-template/vi/5-workshop/5.4-security-groups/> |
+| Thứ 4 | - Khởi tạo Cơ sở dữ liệu RDS PostgreSQL và Bastion Host:<br>&emsp; + Tạo DB Subnet Group và khởi tạo Amazon RDS PostgreSQL trong Private Subnet.<br>&emsp; + Khởi tạo máy chủ ảo EC2 Bastion Host tại Public Subnet.<br>&emsp; + Kết nối an toàn qua Bastion Host để nạp (initialize) SQL Schema cho RDS. | 01/07/2026 | 01/07/2026 | <https://xduc695.github.io/fcj-workshop-template/vi/5-workshop/5.5-rds-database/>|
+| Thứ 5 | - Cấu hình Load Balancer và triển khai ECS Fargate:<br>&emsp; + Khởi tạo Target Groups và Application Load Balancer (ALB) công khai.<br>&emsp; + Tạo ECS Cluster, định nghĩa Task Definitions (backend tích hợp Redis sidecar).<br>&emsp; + Triển khai ECS Services trên Fargate và cấu hình ECS Service Auto Scaling. | 02/07/2026 | 02/07/2026 | <https://xduc695.github.io/fcj-workshop-template/vi/5-workshop/5.6-load-balancer/><br><https://xduc695.github.io/fcj-workshop-template/vi/5-workshop/5.7-ecs-fargate/> |
+| Thứ 6 | - Giám sát CloudWatch Alarm và cơ chế S3 Backup KMS:<br>&emsp; + Cấu hình Amazon SNS Topic gửi cảnh báo email khi hạ tầng quá tải.<br>&emsp; + Thiết lập CloudWatch Alarms theo dõi ngưỡng CPU utilization.<br>&emsp; + Khởi tạo S3 Bucket, KMS Key và thực hiện Export RDS Snapshot sang Amazon S3. | 03/07/2026 | 03/07/2026 |<https://xduc695.github.io/fcj-workshop-template/vi/5-workshop/5.8-cloudwatch-alarm/><br><https://xduc695.github.io/fcj-workshop-template/vi/5-workshop/5.9-s3-backup/> |
 
 ### Kết quả đạt được tuần 11:
 
-**1. Triển khai Hạ tầng Ứng dụng lên AWS (Thứ 2)**
-* Đóng gói mã nguồn Backend Gradle và Frontend Nginx đẩy lên AWS ECR. Triển khai thành công lên cụm ECS Fargate chạy an toàn bên trong các Private Subnets.
-* Khởi tạo database RDS PostgreSQL cô lập hoàn toàn, kết nối thông suốt qua JDBC và nạp schema SQL thông qua cầu nối an toàn EC2 Bastion Host.
-* Thiết lập giải pháp khôi phục thảm họa: cấu hình IAM policy/role cho phép export dữ liệu nén RDS Snapshot bảo vệ bởi KMS sang S3 Bucket.
-* Kiểm tra ALB nhận diện thành công trạng thái `Healthy` ở cổng 80 (Frontend) và cổng 8080 (Backend).
+**1. Đóng gói Container và Chuẩn hóa ECR Repository (Thứ 2)**
+* Đóng gói thành công mã nguồn ứng dụng Backend Spring Boot và Frontend Nginx bằng Docker, tối ưu hóa kích thước image và thiết lập các biến môi trường cấu hình thống nhất.
+* Khởi tạo các ECR Repositories (pg-backend, pg-frontend), thực hiện tag và push toàn bộ Docker Images từ môi trường phát triển lên đám mây Amazon ECR an toàn.
+
+**2. Xây dựng Hạ tầng Mạng VPC 3-tier & Security Groups (Thứ 3)**
+* Quy hoạch thành công hệ thống mạng VPC 3-tier phân tách trên 2 Availability Zones (AZs), cấu hình phân khu rõ ràng giữa Public Subnets, Private App Subnets và Private DB Subnets.
+* Cấu hình Internet Gateway (IGW) cho tiếp nhận lưu lượng truy cập bên ngoài và NAT Gateway phục vụ các luồng mạng chủ động đi ra ngoài từ vùng Private Subnets.
+* Thiết lập hệ thống tường lửa Security Groups phân lớp bảo mật chặt chẽ, áp dụng nguyên tắc đặc quyền tối thiểu (Least Privilege) giữa ALB, ECS Fargate, RDS và Bastion Host.
+
+**3. Khởi tạo Cơ sở dữ liệu RDS PostgreSQL & Bastion Host (Thứ 4)**
+* Khởi tạo cơ sở dữ liệu Amazon RDS PostgreSQL cô lập hoàn toàn trong vùng Private DB Subnet, thiết lập DB Subnet Group và cấu hình tham số lưu trữ bảo mật.
+* Triển khai máy chủ ảo EC2 Bastion Host tại vùng Public Subnet làm cầu nối quản trị an toàn. Kết nối SSH thông suốt qua Bastion Host để khởi tạo (initialize) thành công toàn bộ SQL Schema và dữ liệu ban đầu cho RDS.
+
+**4. Triển khai Bộ cân bằng tải ALB & ECS Fargate Container (Thứ 5)**
+* Khởi tạo Application Load Balancer (ALB) công khai, cấu hình Target Groups và Listener Rules điều phối lưu lượng chính xác tới các cổng dịch vụ.
+* Tạo ECS Cluster, định nghĩa các bản ghi Task Definitions cho Backend (tích hợp container Redis sidecar cho caching và lock) và Frontend Nginx.
+* Triển khai ECS Services trên hạ tầng serverless AWS ECS Fargate thành công. ALB kiểm tra và xác nhận trạng thái Healthy hoạt động ổn định ở cổng 80 (Frontend) và cổng 8080 (Backend).
 ![Trạng thái Target Health của Backend](/images/h48.png)
 ![Trạng thái Target Health của Frontend](/images/h49.png)
 
-**2. Kiểm thử Tải giả lập và Giám sát CloudWatch (Thứ 3)**
-* Truy cập ứng dụng thành công qua DNS của Application Load Balancer để kiểm thử các luồng nghiệp vụ trên trình duyệt.
-![Web High-Concurrency Payment Gateway](/images/h82.png)
-![Kiểm toán tài khoản](/images/h84.png)
-![Giả lập kiểm thử](/images/h85.png)
-* Kiểm tra CloudWatch Log Group `/ecs/pg-logs`. Bóc tách thành công các log khởi chạy của Spring Boot, ghi nhận kết nối tới PostgreSQL và Redis sidecar.
-![Log Streams backend](/images/h86.png)
-* Giám sát lượng requests qua ALB bằng metrics `RequestCount` (Sum, 1 minutes). Biểu đồ trực quan tăng vọt chứng minh lượng traffic từ công cụ kiểm thử.
-![Metrics RequestCount](/images/h87.png)
-* **Kết quả K6:** Hệ thống đương đầu thành công 100 VUs tạo 10.000 giao dịch trong 1 phút 50 giây (Tỷ lệ thành công 99.78%). Cơ chế khóa phân tán bảo toàn tính nhất quán (delta = 0.00).
-![Kết quả toàn vẹn dữ liệu k6](/images/h88.png)
-* Các cảm biến Alarm hoạt động nhạy bén: AlarmLow (`CPU < 63%`) và AlarmHigh (`CPU > 70%`) được trigger chuẩn xác phục vụ Auto Scaling.
-![Trạng thái CloudWatch Alarms](/images/h89.png)
-
-**3. Hoàn thiện Tài liệu Workshop 10 Phần (Thứ 4)**
-* Soạn thảo chi tiết 10 bước thực hành của Workshop bằng từ ngữ tiếng Anh chuyên ngành chuẩn xác khớp với giao diện AWS Console hiện hành.
-* Các phần hướng dẫn đầy đủ từ việc cấu hình VPC, Security Groups, IAM Roles, ALB, ECS Cluster đến thiết lập S3 Backup & Recovery, giúp người dùng cuối dễ dàng theo dõi và tái lập kiến trúc.
-
-**4. Báo cáo Chuỗi Sự kiện FCJ Community Day (Thứ 5)**
-* Đóng gói bài viết Event 1: Kiến trúc AI Agent trên AWS, Prompt Engineering, Token Economics.
-* Hoàn thiện bài viết Event 2: Tảng băng trôi sự trì hoãn, pipeline GenAI có Output Validator.
-* Hoàn thiện bài viết Event 3: Quản lý Session WebSocket qua DynamoDB, phân lớp Container Docker, mạng IDS bằng Học máy và 8 bước học DevOps.
-
-**5. Tài liệu Báo cáo Kỹ thuật Blog (Thứ 6)**
-* **Blog 1 (DevOps):** Giải pháp CI/CD tinh gọn, thiết lập mạng tự động, ALB, Auto Scaling với ECS Express Mode.
-* **Blog 2 (Cloud Operations):** Phục hồi thảm họa bằng Velero, EKS Pod Identity, xử lý lỗi kẹt Pod.
-* **Blog 3 (FinOps):** Quản trị lưu trữ vượt 90 ngày Console, hàm SQL Athena tối ưu phân tích chi phí Cloud.
+**5. Giám sát CloudWatch Alarms & Xuất RDS Snapshot sang S3 bằng KMS (Thứ 6)**
+* Khởi tạo kho lưu trữ Amazon S3 Data Bucket và tạo khóa KMS tự quản lý (Customer Managed KMS Key). Thực hiện thành công quá trình xuất (export) bản sao lưu RDS Snapshot sang S3 với cơ chế mã hóa dữ liệu ở trạng thái lưu trữ (Encryption at rest).
+![Tạo S3 Bucket](/images/h61.png)
+![Tạo khóa KMS](/images/h62.png)
+![pg-db-snapshot-manual](/images/h65.png)
+![Export to Amazon S3 success](/images/h68.png)
+* Thiết lập Amazon SNS Topic đăng ký nhận email thông báo sự cố. Cấu hình hệ thống CloudWatch Alarms theo dõi chỉ số hạ tầng (CPU utilization), đảm bảo cảnh báo tự động phản hồi tức thì khi hệ thống tiệm cận ngưỡng quá tải.
+![sns](/images/h50.png)
+![Tạo CloudWatch Alarm](/images/h74.png)

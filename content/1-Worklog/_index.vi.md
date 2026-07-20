@@ -31,6 +31,6 @@ Dưới đây là tóm tắt tiến trình chi tiết qua từng tuần:
 
 **Tuần 10:** [Tích hợp Redis (Caching, Rate Limiting JWT, Distributed Lock) và cấu hình FinOps Athena](1.10-Week10/)
 
-**Tuần 11:** [Dịch chuyển toàn bộ dự án lên AWS, viết tài liệu Workshop và Báo cáo Sự kiện / Blog](1.11-Week11/)
+**Tuần 11:** [Đóng gói Docker ECR, thiết lập hạ tầng VPC 3-tier, RDS PostgreSQL, ALB, ECS Fargate và S3 Backup KMS](1.11-Week11/)
 
-**Tuần 12:** [Nghiệm thu cuối khóa, hoàn thiện Bản Đề xuất (Proposal), Tự đánh giá và Đóng góp ý kiến](1.12-Week12/)
+**Tuần 12:** [Hoàn thiện tài liệu Workshop, Báo cáo Sự kiện/Blog, kiểm thử tải k6, Proposal, Tự đánh giá và Bàn giao](1.12-Week12/)

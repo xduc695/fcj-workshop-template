@@ -31,6 +31,6 @@ Below is a detailed summary of the progress week by week:
 
 **Week 10:** [Integrating Redis (Caching, JWT Rate Limiting, Distributed Lock) and configuring FinOps with Athena](1.10-Week10/)
 
-**Week 11:** [Migrating the entire project to AWS, writing Workshop documentation, and Event/Blog Reports](1.11-Week11/)
+**Week 11:** [Packaging ECR Docker Images, setting up 3-tier VPC, RDS PostgreSQL, ALB, ECS Fargate, and S3 Backup KMS](1.11-Week11/)
 
-**Week 12:** [Final handover, completing the Proposal, Self-Evaluation, and Feedback](1.12-Week12/)
+**Week 12:** [Finalizing Workshop docs, Event/Blog Reports, k6 load testing, Proposal, Self-Evaluation, and Handover](1.12-Week12/)

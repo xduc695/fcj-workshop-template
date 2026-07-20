@@ -7,38 +7,45 @@ pre: " <b> 1.12. </b> "
 ---
 ### Week 12 Objectives:
 
-* Compile and complete the Project Proposal with a 3-tier security architecture diagram and an operating cost estimate table on AWS Cloud.
-* Perform a personal capacity Self-Evaluation after 12 weeks of internship, objectively acknowledging achieved skills and areas for improvement.
-* Write a feedback and sharing report to improve the quality of the internship program.
-* Comprehensively review, check for errors, and package the entire final internship report documentation system on the GitHub Repository.
+* Complete detailed 10-part hands-on Workshop documentation guiding end-users on the AWS Console.
+* Synthesize knowledge and complete FCJ Community Day event reports and in-depth technical Blog posts.
+* Perform simulated load testing (k6) and evaluate load capacity through CloudWatch monitoring (Logs, Metrics, Alarms).
+* Compile Project Proposal, operational cost estimates, and perform Self-Evaluation.
+* Conduct final review, package all documentation, and hand over project on GitHub Repository.
 
 ### Tasks to be implemented this week:
 | Day | Task | Start Date | End Date | Resource Links |
 | --- | --- | --- | --- | --- |
-| Monday | - Complete the Project Proposal document:<br> - **Practice:** <br>&emsp; + Rewrite the entire Proposal.<br>&emsp; + Integrate a static architecture diagram using Mermaid (3-tier security).<br>&emsp; + Build a detailed operating cost calculation table using AWS Pricing Calculator. | 06/07/2026 | 06/07/2026 | [Proposal](https://xduc695.github.io/fcj-workshop-template/2-proposal/) |
-| Tuesday | - Compile the Self-Evaluation report:<br> - **Practice:** <br>&emsp; + Synthesize professional skills (Hard skills) and Soft skills.<br>&emsp; + Objectively evaluate completion levels (Fair, Good, Average).<br>&emsp; + Deeply analyze points needing improvement (Time management, code optimization). | 07/07/2026 | 07/07/2026 | [Self-Evaluation](https://xduc695.github.io/fcj-workshop-template/6-self-evaluation/) |
-| Wednesday | - Compile the Feedback and Sharing report:<br> - **Practice:** <br>&emsp; + Write a review of the 12-week AWS Microservices architecture internship roadmap.<br>&emsp; + Propose improvements for documentation and student support processes.<br>&emsp; + Translate the sharing section bilingually (English - Vietnamese). | 08/07/2026 | 08/07/2026 | [Feedback](https://xduc695.github.io/fcj-workshop-template/7-feedback/) |
-| Thursday | - Review and synthesize the entire Repository:<br> - **Practice:** <br>&emsp; + Re-align the entire timeline from Week 1 to Week 11.<br>&emsp; + Check image rendering, Markdown formatting, and Hugo Shortcode structures.<br>&emsp; + Remove old Workshop images, update context-appropriate system images. | 09/07/2026 | 09/07/2026 | |
-| Friday | - Package the final internship report system:<br> - **Practice:** <br>&emsp; + Fix spelling errors, standardize Technical Writing style.<br>&emsp; + Run Hugo server local test build commands.<br>&emsp; + Commit and Push the entire source code to GitHub, ready for final review. | 10/07/2026 | 10/07/2026 | |
+| Monday | - Finalize Practical Workshop Documentation (Step-by-step):<br>&emsp; + Compile 10 sections of hands-on Workshop guide.<br>&emsp; + Detail point-and-click steps on AWS Console from VPC, RDS, ALB to ECS Fargate and S3 Backup. | 06/07/2026 | 06/07/2026 | <https://xduc695.github.io/fcj-workshop-template/5-workshop/> |
+| Tuesday | - Event Reporting and Technical Blog Writing:<br>&emsp; + Write 03 event summary reports for FCJ Community Day (AI, GenAI, WebSockets).<br>&emsp; + Author 03 technical Blog posts on DevOps, Cloud Operations, and FinOps. | 07/07/2026 | 07/07/2026 | <https://xduc695.github.io/fcj-workshop-template/3-blogstranslated/><br><https://xduc695.github.io/fcj-workshop-template/4-eventparticipated/> |
+| Wednesday | - Load Testing and Performance Reporting:<br>&emsp; + Deploy k6 load test scenario with 100 VUs creating 10,000 transactions.<br>&emsp; + Monitor ALB RequestCount charts and CloudWatch Alarm statuses.<br>&emsp; + Evaluate data integrity and inspect system log streams. | 08/07/2026 | 08/07/2026 | <https://xduc695.github.io/fcj-workshop-template/5-workshop/5.10-verification/> |
+| Thursday | - Finalize Project Proposal:<br>&emsp; + Author 3-tier secure architecture proposal document.<br>&emsp; + Build operational cost estimation table using AWS Pricing Calculator. | 09/07/2026 | 09/07/2026 | <https://xduc695.github.io/fcj-workshop-template/2-proposal/> |
+| Friday | - Self-Evaluation and Project Finalization:<br>&emsp; + Conduct Self-Evaluation after 12 weeks of internship.<br>&emsp; + Write Feedback report sharing internship experiences.<br>&emsp; + Final check and push all source code and documents to GitHub Repository. | 10/07/2026 | 10/07/2026 | <https://xduc695.github.io/fcj-workshop-template/6-self-evaluation/><br><https://xduc695.github.io/fcj-workshop-template/7-feedback/> |
 
 ### Week 12 Achievements:
 
-**1. Completed Project Proposal (Monday)**
-* Completely rewrote the Proposal homepage integrating a visual Mermaid architecture diagram. The architecture clearly shows 3 security zones: Public Subnet (ALB, Bastion), Private Subnet (ECS Fargate), and Secure Subnet (RDS).
-* Presented a detailed operating cost estimate table closely matching practical needs (~100 USD/month), making the report highly feasible.
+**1. Workshop Documentation Series and Blog Reports (Monday - Tuesday)**
+* Documented detailed 10-part Workshop practical guide using precise technical English terminology.
+* Completed 03 FCJ Community Day event reports and 03 technical Blog articles published to AWS Study Group VN community.
 
-**2. Capacity Self-Evaluation Report (Tuesday)**
-* Allocated an objective and honest evaluation ratio: 'Fair' items account for the majority, while 'Average' and 'Good' are equal.
-* Directly acknowledged areas needing improvement, especially time management skills when deploying complex AWS services and Clean Code thinking in large-scale projects.
+**2. Simulated Load Testing and CloudWatch Monitoring (Wednesday)**
+* Successfully accessed application via Application Load Balancer DNS to test business flows on browser.
+![High-Concurrency Payment Gateway Web](/images/h82.png)
+![Account Auditing](/images/h84.png)
+![Simulated Test](/images/h85.png)
+* Inspected CloudWatch Log Group /ecs/pg-logs. Successfully extracted Spring Boot startup logs, recording connections to PostgreSQL and Redis sidecar.
+![Backend Log Streams](/images/h86.png)
+* Monitored request traffic through ALB via RequestCount metric (Sum, 1 minutes). Visual spike demonstrated traffic from load test tool.
+![RequestCount Metrics](/images/h87.png)
+* **K6 Results:** System successfully handled 100 VUs creating 10,000 transactions in 1 minute 50 seconds (99.78% success rate). Distributed lock preserved data consistency (delta = 0.00).
+![K6 Data Integrity Results](/images/h88.png)
+* Alarm sensors reacted sensitively: AlarmLow (CPU < 63%) and AlarmHigh (CPU > 70%) triggered accurately for Auto Scaling.
+![CloudWatch Alarms Status](/images/h89.png)
 
-**3. Feedback and Sharing Report (Wednesday)**
-* Completed the `7-Feedback` module in both Vietnamese and English.
-* Summarized all the values gained from the program: a shift in system design thinking, self-learning capabilities in DevOps, and mastering the AWS Cloud.
+**3. Proposal & Self-Evaluation (Thursday - Friday)**
+* Wrote brand new Proposal page integrating Mermaid 3-tier architecture diagram and detailed operational cost estimates (~100 USD/month).
+* Completed Self-Evaluation report and Feedback article in bilingual English - Vietnamese.
 
-**4. Comprehensive Repository System Review (Thursday)**
-* Structured, organized, and standardized the entire 12-week schedule according to actual real-time milestones without any overlap.
-* Successfully reviewed 100% of image files, removed leftover images from old workshops (`h*` code files), and optimized the resource directory.
-
-**5. Packaged Final Report (Friday)**
-* Finished standardizing the English and Vietnamese technical writing style, synced 1:1 across all Modules (Worklog, Blogs, Events, Proposal).
-* The Hugo compilation system built successfully with no errors; the report website interface is visual, scientific, and ready for the final internship project handover.
+**4. Final Review & Repository Packaging (Friday)**
+* Audited 100% of image files, ensuring clean rendering across all Markdown documents.
+* Local Hugo build succeeded without errors, providing clean visual documentation ready for final project handover.
