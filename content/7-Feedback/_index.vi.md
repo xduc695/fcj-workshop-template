@@ -30,10 +30,10 @@ Tinh thần "Go Build" và "Fail Fast, Learn Faster" thấm nhuần trong suốt
 - **Điều bạn hài lòng nhất?**  
 Sự thay đổi về tư duy. Tôi không còn code theo cảm tính ("vibe code") mà đã biết tư duy theo chuẩn kiến trúc, nghĩ đến bảo mật (Private Subnet), hiệu năng (Caching), và chi phí trước khi bắt tay vào làm.
 - **Điều bạn nghĩ cộng đồng cần cải thiện?**  
-Nên bổ sung thêm một tuần (Week 13) chuyên sâu về Infrastructure as Code (Terraform) thay vì chỉ thao tác qua Console/CLI. Thao tác tay qua giao diện AWS tuy dễ hiểu cho người mới nhưng sẽ khó tái sử dụng khi làm dự án thực tế lớn.
+  Mặc dù tài liệu hướng dẫn rất chi tiết, nhưng đối với các bạn mới bắt đầu làm quen với AWS, việc cấu hình CLI hay xử lý lỗi phân quyền có thể hơi khó khăn. Cộng đồng có thể bổ sung thêm các bài viết hướng dẫn xử lý một số lỗi thường gặp (troubleshooting guide) và cung cấp thêm tài liệu tham khảo sâu hơn để giúp các bạn thực tập sinh dễ dàng vượt qua các rào cản kỹ thuật ban đầu.
 - **Có khuyên bạn bè tham gia không?**  
 Chắc chắn 100%. Đây không phải là một chương trình "cưỡi ngựa xem hoa". Những ai thực sự muốn chịu "khổ luyện" để trưởng thành và có một portfolio (bộ Workshop + Proposal) cực kỳ nặng ký đi xin việc thì nhất định phải tham gia FCJ.
 
 ### Đề xuất & mong muốn
-- **Đề xuất cải thiện:** Tổ chức thêm các buổi Mock Interview (Phỏng vấn thử) hoặc Hackathon nội bộ (như LotusHacks) để thực tập sinh có cơ hội lập team chiến đấu trong áp lực thời gian ngắn.
-- **Định hướng tương lai:** Tôi vô cùng mong muốn được tiếp tục đồng hành cùng cộng đồng ở vai trò Cộng tác viên (Contributor) hoặc Trợ giảng (Teaching Assistant) để hỗ trợ các bạn thực tập sinh khóa sau.
+- **Đề xuất cải thiện:** Tổ chức thêm các buổi chia sẻ ngắn (Showcase hoặc các buổi thảo luận nhóm nhỏ) định kỳ. Đây sẽ là cơ hội rất tốt để các bạn thực tập sinh trao đổi về cách vượt qua khó khăn khi deploy, chia sẻ mẹo gỡ lỗi và cùng nhau học hỏi để cải thiện kỹ năng của mình tốt hơn.
+- **Định hướng tương lai:** Tôi dự định sẽ tiếp tục tự học và nâng cấp hệ thống hiện tại của mình lên mức độ cao hơn (như thử sức tự động hóa hạ tầng). Đồng thời, tôi sẽ cố gắng trau dồi các kỹ năng chuyên môn còn thiếu và tích lũy thêm kinh nghiệm thực tế để chuẩn bị sẵn sàng cho các cơ hội nghề nghiệp sắp tới trong lĩnh vực Cloud và DevOps.

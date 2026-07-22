@@ -30,10 +30,10 @@ The "Go Build" and "Fail Fast, Learn Faster" mentality was deeply ingrained thro
 - **What were you most satisfied with?**  
 The shift in mindset. I no longer write code based on feelings ("vibe code"); instead, I think according to architectural standards, considering security (Private Subnets), performance (Caching), and costs before actually building.
 - **What do you think the community needs to improve?**  
-It would be great to add an extra week (Week 13) specifically focusing on Infrastructure as Code (Terraform) rather than just manual ClickOps via the Console/CLI. Manual operations are easy for beginners to understand but hard to replicate in large-scale real-world projects.
+  Although the guide is very detailed, configuring CLI or handling permission errors can be a bit challenging for beginners who are new to AWS. The community could add more troubleshooting guides for common issues and provide deeper reference materials to help interns easily overcome initial technical hurdles.
 - **Would you recommend this to a friend?**  
 100% absolutely. This is not a superficial "walk in the park" program. Anyone who truly wants to endure rigorous training to mature and build an extremely heavy-weight portfolio (Workshop + Proposal) for job hunting must join FCJ.
 
 ### Proposals & Desires
-- **Suggestions for improvement:** Organize Mock Interviews or internal Hackathons (like LotusHacks) to give interns the chance to form teams and fight under intense time pressure.
-- **Future direction:** I strongly desire to continue accompanying the community as a Contributor or Teaching Assistant to support the next cohort of interns.
+- **Suggestions for improvement:** Organize regular short sharing sessions (Showcases or small group discussions). This would be an excellent opportunity for interns to exchange ways to resolve deployment issues, share debugging tips, and learn from each other to improve their skills together.
+- **Future direction:** I plan to continue self-study and upgrade my current system to a higher level (such as experimenting with infrastructure automation). At the same time, I will strive to hone my remaining technical skills and accumulate more practical experience to prepare for upcoming career opportunities in the Cloud and DevOps fields.
