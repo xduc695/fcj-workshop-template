@@ -151,4 +151,4 @@ Tham gia sự kiện **FCJ Community Day - AI & Prompt Engineering** là một t
 ![Event 1](/images/b2.jpg)
 ![Event 1](/images/b3.jpg)
 
-> Tổng thể, sự kiện **First Cloud AI Journey (Event 1)** giúp tôi hiểu rõ hơn về vai trò của AI trong học tập, công việc và phát triển phần mềm. Sự kiện không chỉ cung cấp kiến thức công nghệ mà còn giúp tôi thay đổi cách nhìn về việc sử dụng AI: AI là công cụ hỗ trợ mạnh mẽ, nhưng con người vẫn cần giữ vai trò điều phối, tư duy và chịu trách nhiệm cho kết quả cuối cùng.
+> Tổng thể, sự kiện **FCJ Community Day (Event 1)** giúp tôi hiểu rõ hơn về vai trò của AI trong học tập, công việc và phát triển phần mềm. Sự kiện không chỉ cung cấp kiến thức công nghệ mà còn giúp tôi thay đổi cách nhìn về việc sử dụng AI: AI là công cụ hỗ trợ mạnh mẽ, nhưng con người vẫn cần giữ vai trò điều phối, tư duy và chịu trách nhiệm cho kết quả cuối cùng.

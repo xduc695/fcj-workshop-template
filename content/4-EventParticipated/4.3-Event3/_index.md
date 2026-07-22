@@ -89,7 +89,7 @@ pre: " <b> 4.3. </b> "
 
 ### Experience During the Event
 
-Participating in the **First Cloud AI Journey (Event 3)** was a practical technology experience journey, comprehensive and delving into the most difficult technical problems of businesses in the digital age.
+Participating in the **FCJ Community Day (Event 3)** was a practical technology experience journey, comprehensive and delving into the most difficult technical problems of businesses in the digital age.
 
 #### Practical and in-depth technical content
 - Unlike purely theoretical seminars, the event provided real GDScript, Python source code, actual layered Dockerfile configuration files, and cloud infrastructure architecture diagrams in the form of icebergs extracted from real operating systems.
@@ -112,4 +112,4 @@ Participating in the **First Cloud AI Journey (Event 3)** was a practical techno
 ![Event 3](/images/b8.jpg)
 ![Event 3](/images/b9.jpg)
 ![Event 3](/images/b10.jpg)
-> Overall, the First Cloud AI Journey (Event 3) brought explosive energy for action along with a huge volume of top-notch practical knowledge. The event established a comprehensive development philosophy: Master your own infrastructure, bravely face cybersecurity challenges, and continuously upgrade your capabilities through every smallest practical action.
+> Overall, the FCJ Community Day (Event 3) brought explosive energy for action along with a huge volume of top-notch practical knowledge. The event established a comprehensive development philosophy: Master your own infrastructure, bravely face cybersecurity challenges, and continuously upgrade your capabilities through every smallest practical action.

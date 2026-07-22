@@ -89,7 +89,7 @@ pre: " <b> 4.3. </b> "
 
 ### Trải Nghiệm Trong Event
 
-Tham gia sự kiện **First Cloud AI Journey (Event 3)** là một hành trình trải nghiệm công nghệ thực chiến, mang tính bao quát và đào sâu vào những bài toán kỹ thuật hóc búa nhất của doanh nghiệp thời đại số.
+Tham gia sự kiện **FCJ Community Day (Event 3)** là một hành trình trải nghiệm công nghệ thực chiến, mang tính bao quát và đào sâu vào những bài toán kỹ thuật hóc búa nhất của doanh nghiệp thời đại số.
 
 #### Hàm lượng kỹ thuật thực tế và chuyên sâu
 - Khác với các buổi hội thảo lý thuyết suông, sự kiện mang tới các đoạn mã nguồn GDScript, Python, tệp cấu hình Dockerfile cấu trúc phân lớp thực tế, sơ đồ kiến trúc hạ tầng đám mây dạng tảng băng trôi bóc tách từ các hệ thống vận hành thực tế.
@@ -111,4 +111,4 @@ Tham gia sự kiện **First Cloud AI Journey (Event 3)** là một hành trình
 ![Event 3](/images/b8.jpg)
 ![Event 3](/images/b9.jpg)
 ![Event 3](/images/b10.jpg)
-> Tổng thể, sự kiện First Cloud AI Journey (Event 3) đã mang lại nguồn năng lượng hành động bùng nổ cùng khối lượng kiến thức thực chiến đỉnh cao. Sự kiện xác lập một triết lý phát triển toàn diện: Hãy làm chủ hạ tầng của chính mình, dũng cảm đối mặt với các thách thức an ninh mạng và liên tục nâng cấp năng lực bản thân qua từng hành động thực tế nhỏ nhất.
+> Tổng thể, sự kiện FCJ Community Day (Event 3) đã mang lại nguồn năng lượng hành động bùng nổ cùng khối lượng kiến thức thực chiến đỉnh cao. Sự kiện xác lập một triết lý phát triển toàn diện: Hãy làm chủ hạ tầng của chính mình, dũng cảm đối mặt với các thách thức an ninh mạng và liên tục nâng cấp năng lực bản thân qua từng hành động thực tế nhỏ nhất.
