@@ -36,8 +36,9 @@ This Security Group will protect the Fargate Tasks running Frontend, combined Ba
    - **VPC**: Click select **`pg-vpc`**.
 3. **Configure Inbound rules:** Add the following 4 specific rules to ensure strict authorization:
    - **Rule 1 (For Frontend):** Type: **HTTP** | Source: Select **Custom** -> select the Security Group **`pg-alb-sg`** just created in Step 4.1.
-   - **Rule 2 (For API Gateway Backend):** Type: Select **Custom TCP** | Port range: Enter `8080` | Source: Select **Custom** -> select the Security Group **`pg-alb-sg`**.
-   - **Rule 3 (For PostgreSQL Database):** Type: Select **PostgreSQL** (port 5432) | Source: Select **Custom** -> select this very Security Group **`pg-ecs-sg`** being created. (This method allows the Backend container associated with the SG to have permission to call RDS).
-   - **Rule 4 (Internal connection):** Type: Select **All traffic** | Source: Select **Custom** -> select this very Security Group **`pg-ecs-sg`** being created. (Helps the Java container cross-connect with the Redis container sidecar on the same task).
+   - **Rule 2 (For Spring Boot Backend):** Type: Select **Custom TCP** | Port range: Enter `8080` | Source: Select **Custom** -> select the Security Group **`pg-alb-sg`**.
 4. Click the **Create security group** button at the bottom.
 ![ Security Group cho ECS và RDS](/images/h17.png)
+5. Go to Security Group **`pg-ecs-sg`** -> click **Edit inbound rules** -> Click **Add rule**:
+    - **Rule 3 (For PostgreSQL Database):** Type: Select **PostgreSQL** (port 5432) | Source: Select **Custom** -> select this very Security Group **`pg-ecs-sg`** being created. (This method allows the Backend container associated with the SG to have permission to call RDS).
+   - **Rule 4 (Internal connection):** Type: Select **All traffic** | Source: Select **Custom** -> select this very Security Group **`pg-ecs-sg`** being created. (Helps the Java container cross-connect with the Redis container sidecar on the same task).Click **Save rules**.

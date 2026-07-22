@@ -68,4 +68,19 @@ The NAT Gateway is a resource with a very high hourly charge, so it needs to be 
    - Go back to the Bucket list -> Check that bucket and click the **Delete** button -> Enter the bucket name to confirm permanent deletion.
 3. **KMS Key:** Go to the **KMS** service -> click the **`pg-s3-export-key`** key -> click **Key actions** -> select **Schedule key deletion** -> Select the minimum number of days (7 days) -> click confirm.
 
+---
+
+### Step 11.7: Delete CloudWatch Log Groups, Alarms, and SNS Topics
+1. **CloudWatch Log Group:** Go to the **CloudWatch** service -> select **Log groups** in the left menu -> Search and check **`/ecs/pg-logs`** -> click **Actions** -> select **Delete log group(s)** -> Confirm deletion.
+2. **CloudWatch Alarm:** Still in CloudWatch -> select **All alarms** under **Alarms** -> check **`pg-alb-high-request-alarm`** -> click **Actions** -> select **Delete** -> Confirm deletion.
+3. **SNS Topic:** Go to the **Simple Notification Service (SNS)** service -> select **Topics** in the left menu -> check **`pg-alerts`** -> click **Delete** -> Confirm deletion (Also clean up any associated email subscriptions under **Subscriptions** if needed).
+
+---
+
+### Step 11.8: Delete IAM Roles and IAM Policies
+1. **IAM Roles:** Go to the **IAM** service -> select **Roles** in the left menu:
+   - Search and check **`ecsTaskExecutionRole`** -> click **Delete** -> enter role name to confirm deletion.
+   - Search and check **`rds-s3-export-role`** -> click **Delete** -> enter role name to confirm deletion.
+2. **IAM Policy:** Select **Policies** in the left IAM menu -> search for **`rds-s3-export-policy`** -> click **Actions** -> select **Delete** -> Confirm deletion.
+
 Congratulations on successfully and securely completing the lab!

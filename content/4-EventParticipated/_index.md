@@ -10,7 +10,7 @@ During my internship, I participated in 3 events. Each one was a memorable exper
 ### [Event 1](4.1-Event1/)  
 &emsp;**Event Name:** FCJ Community Day - AI & Prompt Engineering  
 
-&emsp;**Date & Time:** 09:00, May 04, 2026  
+&emsp;**Date & Time:** 09:00, May 09, 2026  
 
 &emsp;**Location:** 26th Floor, Bitexco Financial Tower, 02 Hai Trieu Street, Ben Nghe Ward, District 1, Ho Chi Minh City  
 

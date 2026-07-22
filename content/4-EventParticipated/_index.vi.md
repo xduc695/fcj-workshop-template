@@ -10,7 +10,7 @@ Trong quá trình thực tập, em đã tham gia 3 events, với mỗi event là
 ### [Event 1](4.1-Event1/)
 &emsp;**Tên sự kiện:** FCJ Community Day - AI & Prompt Engineering
 
-&emsp;**Thời gian:** 09:00 ngày 04/05/2026
+&emsp;**Thời gian:** 09:00 ngày 09/05/2026
 
 &emsp;**Địa điểm:** Tầng 26, tòa nhà Bitexco, số 02 đường Hải Triều, phường Sài Gòn, thành phố Hồ Chí Minh
 

@@ -68,4 +68,19 @@ NAT Gateway là tài nguyên tính phí theo giờ rất cao nên cần phải x
    - Quay lại danh sách Bucket -> Tích chọn bucket đó và nhấn nút **Delete** -> Nhập tên bucket để xác nhận xóa vĩnh viễn.
 3. **KMS Key:** Vào dịch vụ **KMS** -> click chọn khóa **`pg-s3-export-key`** -> click **Key actions** -> chọn **Schedule key deletion** -> Chọn số ngày tối thiểu (7 ngày) -> nhấn xác nhận.
 
+---
+
+### Bước 11.7: Xóa CloudWatch Log Groups, Alarms và SNS Topics
+1. **CloudWatch Log Group:** Vào dịch vụ **CloudWatch** -> chọn **Log groups** ở menu trái -> Tìm kiếm và tích chọn **`/ecs/pg-logs`** -> click **Actions** -> chọn **Delete log group(s)** -> Xác nhận xóa.
+2. **CloudWatch Alarm:** Vẫn tại CloudWatch -> chọn **All alarms** dưới mục **Alarms** -> tích chọn **`pg-alb-high-request-alarm`** -> click **Actions** -> chọn **Delete** -> Xác nhận xóa.
+3. **SNS Topic:** Vào dịch vụ **Simple Notification Service (SNS)** -> chọn **Topics** ở menu trái -> tích chọn **`pg-alerts`** -> click **Delete** -> Xác nhận xóa. *(Đồng thời vào phần **Subscriptions** và xóa subscription email tương ứng)*.
+
+---
+
+### Bước 11.8: Xóa IAM Roles và IAM Policies
+1. **IAM Roles:** Vào dịch vụ **IAM** -> chọn **Roles** ở menu trái:
+   - Tìm kiếm và tích chọn **`ecsTaskExecutionRole`** -> click **Delete** -> nhập tên role để xác nhận xóa.
+   - Tìm tiếp và tích chọn **`rds-s3-export-role`** -> click **Delete** -> nhập tên role để xác nhận xóa.
+2. **IAM Policy:** Chọn mục **Policies** ở menu trái IAM -> tìm kiếm và chọn **`rds-s3-export-policy`** -> click **Actions** -> chọn **Delete** -> Xác nhận xóa.
+
 Chúc mừng bạn đã hoàn thành bài thực hành một cách trọn vẹn và an toàn!

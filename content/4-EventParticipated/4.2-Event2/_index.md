@@ -109,6 +109,6 @@ Participating in the **First Cloud AI Journey (Event 2)** was an extremely pract
 ### Some pictures from the event
 ![Event 2](/images/b4.jpg)
 ![Event 2](/images/b5.jpg)
-![Event 2](/images/b6.jpg)
+![Event 2](/images/b11.jpg)
 ![Event 2](/images/b7.jpg)
 > Overall, the First Cloud AI Journey (Event 2) brought a strong energy of action to attendees. The event completely changed the perspective on learning and building products: Don't wait for perfection, bravely step forward, act first to accumulate confidence and master your own development roadmap.

@@ -8,6 +8,8 @@ pre : " <b> 5.10. </b> "
 
 After deploying all infrastructure components (VPC, RDS, ALB, ECS Fargate, CloudWatch Alarm, S3 Backup), this is the final step to test and verify the entire system's correctness and performance.
 
+> **Demo Video:** To visually inspect the entire web interface interaction and simulated k6 load testing execution on AWS, please refer to the [System Demo & Load Testing Video](https://drive.google.com/file/d/1J2bgKGyZWc86H7bJlQ3_K-vSoPuC1VAp/view?usp=sharing).
+
 ---
 
 ### Step 10.1: Verify Target Group Health Status
